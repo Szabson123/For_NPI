@@ -5,3 +5,7 @@ from django.views.generic import TemplateView
 
 class Task_List(TemplateView):
     template_name = 'user_profile/tasks_list.html'
+
+
+class TaskForm(TemplateView):
+    template_name = 'user_profile/task_form.html'
