@@ -1,19 +1,4 @@
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Login</title>
-  </head>
-  <body>
-    <div class="">
-      <h2>Please Login:</h2>
-      {% if form.errors %}
-      <p>Your username and password didnt match! Please try again.</p>
-      {% endif %}
-      <form action="{% url 'login' %}" method="POST">
-        {% csrf_token %} {{ form.as_p }}
-        <input type="submit" class="" value="login" />
-        <input type="hidden" name="next" value="{{next}}" />
-      </form>
-    </div>
-  </body>
-</html>
+<form action="{% url 'login' %}" method="post">
+  {% csrf_token %} {{ form.as_p }}
+  <button type="submit">Login</button>
+</form>
