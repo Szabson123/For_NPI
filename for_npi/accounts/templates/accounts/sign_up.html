@@ -1,4 +1,7 @@
+{% extends "user_profile/base.html" %} {% block content %}
+
 <form method="post" action="{% url 'signup' %}">
   {% csrf_token %} {{ form.as_p }}
   <button type="submit">Sign up</button>
 </form>
+{% endblock %}
