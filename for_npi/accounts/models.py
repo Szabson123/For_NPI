@@ -12,8 +12,7 @@ class Profile(models.Model):
     basic_info = models.CharField(max_length=500, blank=True)
     role = models.CharField(max_length=50, choices=ROLE_CHOICES)
     is_approved = models.BooleanField(default=False)
-    
-    
+
 # Służy do wyświetlania w panelu administracyjnym profilu po nazwie użytkownika    
     def __str__(self):
         return self.user.username

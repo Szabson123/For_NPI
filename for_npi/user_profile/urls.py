@@ -7,8 +7,10 @@ app_name = 'user_profile'
 
 urlpatterns = [
     path('main_page/', views.MainPage.as_view(), name='main_page'),
-    path('tasks_list/', views.TaskList.as_view(), name='tasks_list'),
-    path('task_form/', views.TaskForm.as_view(), name='task_form'),
+    path('tasks_list/', views.TaskListView.as_view(), name='tasks_list'),
+    path('task_form/', views.TaskCreateView.as_view(), name='task_form'),
 
-    path('logout/', LogoutView.as_view(), name='logout')
+    path('logout/', LogoutView.as_view(), name='logout'),
+    path('task_detail/<int:pk>', views.TaskDetailView.as_view(), name='task_detail'),
+    path('task_update/<int:pk>', views.TaskUpdateView.as_view(), name='task_update'),
 ]
