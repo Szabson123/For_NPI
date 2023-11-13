@@ -17,11 +17,19 @@
       crossorigin="anonymous"
     ></script>
 
+    <style>
+      .navbar {
+        font-size: 1.2rem;
+      }
+    </style>
+
     <body class="loader">
       <!-- Navbar -->
-      <nav class="navbar navbar-expand-lg navbar-light bg-light techfont">
+      <nav
+        class="navbar navbar-expand-lg navbar-light bg-light techfont techfont py-3"
+      >
         <div class="container">
-          <a class="navbar-brand" href="#">My blog</a>
+          <a class="navbar-brand" href="#">MY NPI</a>
           <button
             class="navbar-toggler"
             type="button"
@@ -36,27 +44,24 @@
           <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
               <li class="nav-item">
-                <a class="nav-link" href="#">About</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="https://github.com/Szabson123"
-                  >GitHub</a
-                >
+                <a class="nav-link" href="#">Data Base</a>
               </li>
             </ul>
             <ul class="navbar-nav">
               {% if user.is_authenticated %}
               <li class="nav-item">
-                <a class="nav-link" href="#">New Post</a>
+                <a class="nav-link" href="#">Add Task</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#">Draft Posts</a>
+                <a class="nav-link" href="#">My Tasks</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="#">Log out</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link disabled">Welcome {{ user.username }}</a>
+                <a class="nav-link disabled"
+                  >Welcome {{ user.first_name }} {{ user.last_name }}</a
+                >
               </li>
               {% else %}
               <li class="nav-item">
