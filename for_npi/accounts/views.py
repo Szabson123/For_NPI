@@ -24,6 +24,6 @@ class Login(LoginView):
     template_name = 'login.html'
 
     def get_success_url(self):
-        return reverse_lazy('user_profile:tasks_list')
+        return reverse_lazy('user_profile:main_page')
     
     
