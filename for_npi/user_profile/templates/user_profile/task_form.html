@@ -1,13 +1,7 @@
-{% extends "user_profile/base.html" %}
-{% block content %}
-    <h1>New Task</h1>
-    <form class="form-control" method="POST">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="save btn btn-default">ADD</button>
-    </form>
+{% extends "user_profile/base.html" %} {% block content %}
+<h1>New Task</h1>
+<form class="form-control" method="POST">
+  {% csrf_token %} {{ form.as_p }}
+  <button type="submit" class="save btn btn-primary">ADD</button>
+</form>
 {% endblock %}
-
-
-
-

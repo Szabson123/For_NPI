@@ -1,10 +1,12 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import TemplateView, DetailView, ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from .forms import TaskForm
 from django.urls import reverse_lazy
 from .models import Task
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.utils import timezone
+from django.contrib.auth.decorators import login_required
 
 
 class TaskListView(ListView):
@@ -24,15 +26,39 @@ class TaskCreateView(CreateView, LoginRequiredMixin):
 
 
 class TaskUpdateView(UpdateView):
+    model = Task
     form_class = TaskForm
     template_name = 'user_profile/task_form.html'
-    success_url = reverse_lazy('task_list')
+    success_url = reverse_lazy('user_profile:tasks_list')
 
 
 class TaskDetailView(DetailView):
     model = Task
     template_name = 'user_profile/task_detail.html'
     context_object_name = 'task'
+    
+
+
+@login_required
+def accept_task(request, pk):
+    task = get_object_or_404(Task, pk=pk)
+    if request.method == 'POST':
+        task.accepted_date = timezone.now()
+        task.save()
+        return redirect('user_profile:task_detail', pk=pk)  
+    else:
+        return redirect('user_profile:tasks_list')  
+
+
+@login_required
+def complete_task(request, pk):
+    task = get_object_or_404(Task, pk=pk)
+    if request.method == 'POST':
+        task.completed_date = timezone.now()
+        task.save()
+        return redirect('user_profile:task_detail', pk=pk)
+    else:
+        return redirect('user_profile:tasks_list')
 
 
 

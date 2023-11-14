@@ -29,7 +29,9 @@
         class="navbar navbar-expand-lg navbar-light bg-light techfont techfont py-3"
       >
         <div class="container">
-          <a class="navbar-brand" href="#">MY NPI</a>
+          <a class="navbar-brand" href="{% url 'user_profile:main_page' %}"
+            >MY NPI</a
+          >
           <button
             class="navbar-toggler"
             type="button"
@@ -50,13 +52,19 @@
             <ul class="navbar-nav">
               {% if user.is_authenticated %}
               <li class="nav-item">
-                <a class="nav-link" href="{% url 'user_profile:task_form' %}">Add Task</a>
+                <a class="nav-link" href="{% url 'user_profile:task_form' %}"
+                  >Add Task</a
+                >
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="{% url 'user_profile:tasks_list' %}">My Tasks</a>
+                <a class="nav-link" href="{% url 'user_profile:tasks_list' %}"
+                  >My Tasks</a
+                >
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="{% url 'user_profile:logout' %}">Log out</a>
+                <a class="nav-link" href="{% url 'user_profile:logout' %}"
+                  >Log out</a
+                >
               </li>
               <li class="nav-item">
                 <a class="nav-link disabled"

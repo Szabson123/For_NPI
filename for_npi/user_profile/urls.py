@@ -11,6 +11,12 @@ urlpatterns = [
     path('task_form/', views.TaskCreateView.as_view(), name='task_form'),
 
     path('logout/', LogoutView.as_view(), name='logout'),
+    
     path('task_detail/<int:pk>', views.TaskDetailView.as_view(), name='task_detail'),
     path('task_update/<int:pk>', views.TaskUpdateView.as_view(), name='task_update'),
+    path('task_accept/<int:pk>/', views.accept_task, name='task_accept'),
+    path('task_complete/<int:pk>/', views.complete_task, name='task_complete'),
+    
+    
+    
 ]
