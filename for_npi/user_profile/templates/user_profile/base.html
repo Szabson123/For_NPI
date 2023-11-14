@@ -21,6 +21,10 @@
       .navbar {
         font-size: 1.2rem;
       }
+      .navbar .container-fluid {
+        padding-left: 50px;
+        padding-right: 50px;
+      }
     </style>
 
     <body class="loader">
@@ -28,7 +32,7 @@
       <nav
         class="navbar navbar-expand-lg navbar-light bg-light techfont techfont py-3"
       >
-        <div class="container">
+        <div class="container-fluid">
           <a class="navbar-brand" href="{% url 'user_profile:main_page' %}"
             >MY NPI</a
           >
@@ -67,8 +71,11 @@
                 >
               </li>
               <li class="nav-item">
-                <a class="nav-link disabled"
-                  >Welcome {{ user.first_name }} {{ user.last_name }}</a
+                <a
+                  style="color: rgb(12, 39, 61)"
+                  class="nav-link"
+                  href="{% url 'user_profile:profile' username=user.username %}"
+                  >Welcome {{ user.get_full_name }}</a
                 >
               </li>
               {% else %}

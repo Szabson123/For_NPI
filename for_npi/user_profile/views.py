@@ -7,12 +7,15 @@ from .models import Task
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
-
+from django.contrib.auth.models import User
 
 class TaskListView(ListView):
     model = Task
     context_object_name = 'tasks'
     template_name = 'user_profile/tasks_list.html'
+    
+    def get_queryset(self):
+        return Task.objects.filter(author=self.request.user)
 
 
 class TaskCreateView(CreateView, LoginRequiredMixin):
@@ -64,3 +67,11 @@ def complete_task(request, pk):
 
 class MainPage(TemplateView):
     template_name = 'user_profile/main_page.html'
+
+
+
+class UserProfileView(DetailView):
+    model = User
+    slug_field = 'username'
+    slug_url_kwarg = 'username'
+    template_name = 'user_profile/user_profile.html'

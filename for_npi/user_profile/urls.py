@@ -17,6 +17,6 @@ urlpatterns = [
     path('task_accept/<int:pk>/', views.accept_task, name='task_accept'),
     path('task_complete/<int:pk>/', views.complete_task, name='task_complete'),
     
-    
+     path('profile/<str:username>/', views.UserProfileView.as_view(), name='profile'),
     
 ]

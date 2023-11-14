@@ -14,7 +14,7 @@
     <tbody>
       {% for task in tasks %}
       <tr>
-        <td>{{ user.first_name }} {{ user.last_name }}</td>
+        <td>{{ task.author.first_name }} {{ task.author.last_name }}</td>
         <td>{{ task.title }}</td>
         <td>{{ task.get_priority_display }}</td>
         <td>{{ task.create_date }}</td>
