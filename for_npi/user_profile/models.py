@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from django.urls import reverse
-
+from django.conf import settings
 
 class Task(models.Model):
     PRIORITY_CHOICES = (
@@ -18,7 +18,7 @@ class Task(models.Model):
     completed_date = models.DateTimeField(null=True, blank=True)
     priority = models.CharField(max_length=50, choices=PRIORITY_CHOICES)
     additional = models.CharField(max_length=255, blank=True)
-
+    assigned_to = models.ManyToManyField(settings.AUTH_USER_MODEL, null=True, blank=True, related_name='assigned_tasks')
 
     def get_absolute_url(self):
         return reverse('user_profile:task_detail', kwargs={"pk": self.pk})

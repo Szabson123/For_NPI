@@ -8,6 +8,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.db.models import Q
+
 
 class TaskListView(ListView):
     model = Task
@@ -15,13 +17,19 @@ class TaskListView(ListView):
     template_name = 'user_profile/tasks_list.html'
     
     def get_queryset(self):
-        return Task.objects.filter(author=self.request.user)
+        return Task.objects.filter(
+            Q(author=self.request.user) | Q(assigned_to=self.request.user)).distinct()
 
 
 class TaskCreateView(CreateView, LoginRequiredMixin):
     form_class = TaskForm
     template_name = 'user_profile/task_form.html'
     success_url = reverse_lazy('user_profile:tasks_list')
+
+    def get_form_kwargs(self):
+        kwargs = super(TaskCreateView, self).get_form_kwargs()
+        kwargs['request'] = self.request  # Dodajemy request do argumentów formularza
+        return kwargs
 
     def form_valid(self, form):
         form.instance.author = self.request.user  # Ustawienie autora zadania na aktualnie zalogowanego użytkownika
