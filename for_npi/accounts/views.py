@@ -85,3 +85,6 @@ def approve_users(request):
     return render(request, 'approve_users.html', {'profiles': profiles_to_approve})
         
     
+def subordinates_view(request):
+    subordinates = Profile.objects.filter(supervisor=request.user, is_approved=True)
+    return render(request, 'subordinates.html', {'subordinates': subordinates})
