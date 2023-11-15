@@ -1,18 +1,31 @@
 {% extends "user_profile/base.html" %} {% block content %}
-<h2>Oczekujący na akceptację użytkownicy: </h2>
 
-<form method="post">
-  {% csrf_token %}
-  <ul>
-    {% for profile in profiles %}
-    <li>
-      {{ profile.user.username }} -
-      <button type="submit" name="profile_id" value="{{ profile.id }}">
-        Akceptuj
-      </button>
-    </li>
-    {% endfor %}
-  </ul>
-</form>
+
+<div class="container mt-5">
+  <h2 class="text-center mb-4">Oczekujący na akceptację użytkownicy:</h2>
+  <form method="post">
+      {% csrf_token %}
+      <div class="row row-cols-1 row-cols-md-3 justify-content-center g-4">
+          {% for profile in profiles %}
+          <div class="col">
+              <div class="card h-100 text-center">
+                  <div class="card-body d-flex justify-content-center align-items-center">
+                      <h5 class="card-title">{{ profile.user.username }}</h5>
+                  </div>
+                  <div class="card-footer">
+                      <button type="submit" name="profile_id" value="{{ profile.id }}" class="btn btn-primary w-100">
+                          Akceptuj
+                      </button>
+                  </div>
+              </div>
+          </div>
+          {% empty %}
+          <div class="col-12">
+              <p class="text-center">Brak użytkowników do akceptacji.</p>
+          </div>
+          {% endfor %}
+      </div>
+  </form>
+</div>
 
 {% endblock %}
