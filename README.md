@@ -1,7 +1,9 @@
 1.Zgłaszanie Problemów 
   a)Supervisor rozdiela prbolemy i zadania zgłaszane przez produkcje 
-  b)Inżynierowie widzą kiedy zostało zadane, kiedy je rozpoczynają i kiedy kończą i.Czat ze zgłaszającym który usuwa się po skończonym zadaniu 
-  c)Historia zrobionych zadań i.Miejsce w którym będzie tzw baza wiedzy (Kiedy pojawi się problem z maszyną np. FMT zostanie zapisane w Uwagach co zrobiłeś żeby naprawić ) po to żeby móc jeszcze łatwiej i szybciej rozwiązywać problemy 
+  b)Inżynierowie widzą kiedy zostało zadane, kiedy je rozpoczynają i kiedy kończą
+    i.Czat ze zgłaszającym który usuwa się po skończonym zadaniu 
+  c)Historia zrobionych zadań 
+    i.Miejsce w którym będzie tzw baza wiedzy (Kiedy pojawi się problem z maszyną np. FMT zostanie zapisane w Uwagach co zrobiłeś żeby naprawić ) po to żeby móc jeszcze łatwiej i szybciej rozwiązywać problemy 
 2.Możliwość Rejestracji nowych użytkowników
   a)Możliwość dodania swojego profilu tzn jakie problemy zgłosiłeś jakie problemy rozwiązałeś ile itp 
 3.Rangi/ Pozycje. Np supervisor inżynier, pracownik produkcji 
