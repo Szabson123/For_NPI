@@ -8,13 +8,13 @@ User = get_user_model()
 class UserSignUp(UserCreationForm):
     role = forms.ChoiceField(choices= Profile.ROLE_CHOICES)
     supervisor = forms.ModelChoiceField(
-        queryset=User.objects.filter(groups__name='supervisor'),
+        queryset=User.objects.filter(groups__name='Supervisor'),
         required=False
     )
     
     class Meta(UserCreationForm.Meta):
         model = User
-        fields = ('first_name', 'last_name','username', 'email', 'password1', 'password2', 'role')
+        fields = ('first_name', 'last_name','username', 'email', 'password1', 'password2', 'role', 'supervisor')
         
 
 class UserSignIn(AuthenticationForm):

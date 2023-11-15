@@ -23,8 +23,7 @@ class Profile(models.Model):
 @receiver(post_save, sender=User)
 def assign_user_group(sender, instance, created, **kwargs):
     if created:
-        # Przypisanie do grupy na podstawie wybranej roli
-        role = instance.profile.role
+        role = instance.profile.role if hasattr(instance, 'profile') else 'User'
         group_name = 'Engineer' if role == 'engineer' else 'User'
-        group = Group.objects.get(name=group_name)
+        group, _ = Group.objects.get_or_create(name=group_name)
         instance.groups.add(group)

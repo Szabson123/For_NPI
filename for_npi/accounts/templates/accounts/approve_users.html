@@ -1,0 +1,18 @@
+{% extends "user_profile/base.html" %} {% block content %}
+<h2>Oczekujący na akceptację użytkownicy: </h2>
+
+<form method="post">
+  {% csrf_token %}
+  <ul>
+    {% for profile in profiles %}
+    <li>
+      {{ profile.user.username }} -
+      <button type="submit" name="profile_id" value="{{ profile.id }}">
+        Akceptuj
+      </button>
+    </li>
+    {% endfor %}
+  </ul>
+</form>
+
+{% endblock %}
