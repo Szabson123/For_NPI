@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.contrib.auth.models import Group
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
@@ -19,3 +20,11 @@ class Profile(models.Model):
         return self.user.username
 
 
+@receiver(post_save, sender=User)
+def assign_user_group(sender, instance, created, **kwargs):
+    if created:
+        # Przypisanie do grupy na podstawie wybranej roli
+        role = instance.profile.role
+        group_name = 'Engineer' if role == 'engineer' else 'User'
+        group = Group.objects.get(name=group_name)
+        instance.groups.add(group)
