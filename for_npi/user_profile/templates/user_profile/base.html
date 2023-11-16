@@ -68,6 +68,9 @@
             <ul class="navbar-nav">
               {% if user.is_authenticated %}
               <li class="nav-item">
+                <a class="nav-link" href="{% url 'user_profile:history_view' %}">History Tasks</a>
+              </li>
+              <li class="nav-item">
                 <a class="nav-link" href="{% url 'user_profile:task_form' %}"
                   >Add Task</a
                 >

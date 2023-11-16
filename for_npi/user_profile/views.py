@@ -9,6 +9,7 @@ from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.db.models import Q
+from django.db.models.functions import TruncDate
 
 
 class TaskListView(ListView):
@@ -67,7 +68,7 @@ def complete_task(request, pk):
     if request.method == 'POST':
         task.completed_date = timezone.now()
         task.save()
-        return redirect('user_profile:task_detail', pk=pk)
+        return redirect('user_profile:history_view')
     else:
         return redirect('user_profile:tasks_list')
 
@@ -100,3 +101,18 @@ def create_task_for_subordinate(request, username):
     else:
         form = TaskForm(initial={'assigned_to': [subordinate]})
     return render(request, 'user_profile/task_form.html', {'form': form})
+
+
+
+@login_required
+def history_view(request):
+    completed_tasks = Task.objects.filter(completed_date__isnull=False).annotate(completed_date_date=TruncDate('completed_date')).order_by('-completed_date_date')
+
+    grouped_tasks = {}
+    for task in completed_tasks:
+        completed_date = task.completed_date_date
+        if completed_date not in grouped_tasks:
+            grouped_tasks[completed_date] = []
+        grouped_tasks[completed_date].append(task)
+
+    return render(request, 'user_profile/history_view.html', {'grouped_tasks': grouped_tasks})
