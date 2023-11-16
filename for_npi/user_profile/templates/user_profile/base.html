@@ -86,8 +86,8 @@
                 <a
                   style="color: rgb(12, 39, 61)"
                   class="nav-link"
-                  href="{% url 'user_profile:profile' username=user.username %}"
-                  >Welcome {{ user.get_full_name }}</a
+                  href="{% url 'user_profile:profile' request.user.username %}"
+                  >Welcome {{ request.user.get_full_name }}</a
                 >
               </li>
               {% else %}

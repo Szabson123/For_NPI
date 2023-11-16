@@ -83,3 +83,20 @@ class UserProfileView(DetailView):
     slug_field = 'username'
     slug_url_kwarg = 'username'
     template_name = 'user_profile/user_profile.html'
+    
+    
+
+@login_required
+def create_task_for_subordinate(request, username):
+    subordinate = get_object_or_404(User, username=username)
+    if request.method == 'POST':
+        form = TaskForm(request.POST)
+        if form.is_valid():
+            task = form.save(commit=False)
+            task.author = request.user
+            task.save()
+            task.assigned_to.set([subordinate])
+            return redirect('user_profile:tasks_list')
+    else:
+        form = TaskForm(initial={'assigned_to': [subordinate]})
+    return render(request, 'user_profile/task_form.html', {'form': form})

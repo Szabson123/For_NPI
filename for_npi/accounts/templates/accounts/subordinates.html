@@ -14,12 +14,13 @@
                     <div class="card-body">
                         <h5 class="card-title mb-3">{{ subordinate.user.get_full_name }}</h5>
                         <div class="d-grid gap-2">
-                            <button type="button" class="btn btn-outline-primary">
+                            <a href="{% url 'user_profile:profile' subordinate.user.username %}" class="btn btn-outline-primary">
                                 Zobacz profil
+                            </a>
                             </button>
-                            <button type="button" class="btn btn-outline-secondary">
+                            <a href="{% url 'user_profile:create_task_for_subordinate' subordinate.user.username %}" class="btn btn-outline-secondary">
                                 Dodaj zadanie
-                            </button>
+                            </a>
                         </div>
                     </div>
                 </div>
