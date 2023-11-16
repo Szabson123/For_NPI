@@ -22,3 +22,19 @@ class Task(models.Model):
 
     def get_absolute_url(self):
         return reverse('user_profile:task_detail', kwargs={"pk": self.pk})
+
+
+class ProductionIssue(models.Model):
+    STATUS_CHOICES = (
+        ('open', 'Open'),
+        ('closed', 'Closed')
+    )
+    title = models.CharField(max_length=100)
+    description = models.TextField()
+    reported_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='reported_issues')
+    report_date = models.DateTimeField(default=timezone.now)
+    status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='open')
+    priority = models.CharField(max_length=50, choices=Task.PRIORITY_CHOICES, default='medium')
+
+    def __str__(self):
+        return self.title

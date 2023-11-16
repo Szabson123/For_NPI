@@ -20,4 +20,8 @@ urlpatterns = [
     
     path('profile/<str:username>/', views.UserProfileView.as_view(), name='profile'),
     path('task/create-for/<str:username>/', views.create_task_for_subordinate, name='create_task_for_subordinate'),
+
+    path('issues/create/', views.ProductionIssueCreateView.as_view(), name='issue_create'),
+    path('issues/', views.ProductionIssueListView.as_view(), name='main_page'),
+
 ]

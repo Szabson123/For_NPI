@@ -1,6 +1,8 @@
 from .models import Task
 from django import forms
 from accounts.models import User
+from .models import ProductionIssue
+
 
 class TaskForm(forms.ModelForm):
     class Meta:
@@ -23,3 +25,14 @@ class TaskForm(forms.ModelForm):
             self.fields['assigned_to'].queryset = User.objects.filter(profile__supervisor=request.user)
         else:
             del self.fields['assigned_to']
+
+
+class ProductionIssueForm(forms.ModelForm):
+    class Meta:
+        model = ProductionIssue
+        fields = ['title', 'description', 'priority']
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control'}),
+            'priority': forms.Select(attrs={'class': 'form-control'}),
+        }

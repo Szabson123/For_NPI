@@ -1,9 +1,9 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import TemplateView, DetailView, ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from .forms import TaskForm
+from .forms import TaskForm, ProductionIssueForm
 from django.urls import reverse_lazy
-from .models import Task
+from .models import Task, ProductionIssue
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
@@ -116,3 +116,22 @@ def history_view(request):
         grouped_tasks[completed_date].append(task)
 
     return render(request, 'user_profile/history_view.html', {'grouped_tasks': grouped_tasks})
+
+
+class ProductionIssueCreateView(CreateView):
+    model = ProductionIssue
+    form_class = ProductionIssueForm
+    template_name = 'user_profile/production_issue_form.html'
+    success_url = reverse_lazy('user_profile:main_page')
+
+    def form_valid(self, form):
+        form.instance.reported_by = self.request.user
+        return super().form_valid(form)
+
+
+class ProductionIssueListView(ListView):
+    model = ProductionIssue
+    template_name = 'user_profile/main_page.html'
+
+    def get_queryset(self):
+        return ProductionIssue.objects.all().order_by('-report_date')

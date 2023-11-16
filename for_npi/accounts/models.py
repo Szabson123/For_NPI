@@ -7,7 +7,8 @@ from django.dispatch import receiver
 class Profile(models.Model):
     ROLE_CHOICES = (
         ('engineer', 'Engineer'),
-        ('user', 'User')
+        ('user', 'User'),
+        ('production', 'Production')
     )
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     basic_info = models.CharField(max_length=500, blank=True)
