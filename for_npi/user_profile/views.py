@@ -161,10 +161,30 @@ class IssueAssignView(UserPassesTestMixin, View):
         return self.request.user.groups.filter(name='Supervisor').exists()
 
     def post(self, request, issue_id):
-        subordinate_id = request.POST.get('subordinate')
         issue = get_object_or_404(ProductionIssue, pk=issue_id)
-        issue.assigned_to_id = subordinate_id
+        assigned_to_id = request.POST.get('assigned_to')
+        issue.assigned_to = get_object_or_404(User, pk=assigned_to_id)
         issue.save()
         return redirect('user_profile:main_page')
 
+@login_required
+def accept_issue(request, pk):
+    issue = get_object_or_404(ProductionIssue, pk=pk)
+    if request.method == 'POST':
+        if not issue.accepted_date:  # Sprawdź, czy problem nie został już zaakceptowany
+            issue.accepted_date = timezone.now()
+            issue.accepted_by = request.user  # Zapisz użytkownika, który zaakceptował problem
+            issue.save()
+        return redirect('user_profile:main_page')
+    else:
+        return redirect('user_profile:main_page')
 
+@login_required
+def complete_issue(request, pk):
+    issue = get_object_or_404(ProductionIssue, pk=pk)
+    if request.method == 'POST':
+        issue.completed_date = timezone.now()
+        issue.save()
+        return redirect('user_profile:main_page')
+    else:
+        return redirect('user_profile:main_page')

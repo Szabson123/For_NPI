@@ -23,7 +23,7 @@ urlpatterns = [
 
     path('issues/create/', views.ProductionIssueCreateView.as_view(), name='issue_create'),
     path('issues/', views.ProductionIssueListView.as_view(), name='main_page'),
-    path('issue_accept/<int:pk>/', views.IssueAcceptView.as_view(), name='issue_accept'),
-    path('issue_assign/<int:issue_id>/', views.IssueAssignView.as_view(), name='issue_assign'),
-
+    path('issue_accept/<int:pk>/', views.accept_issue, name='issue_accept'),
+    path('issue_complete/<int:pk>/', views.complete_issue, name='issue_complete'),
+    path('issue_assign/<int:pk>/', views.IssueAssignView.as_view(), name='issue_assign'),
 ]

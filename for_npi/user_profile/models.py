@@ -37,6 +37,10 @@ class ProductionIssue(models.Model):
     priority = models.CharField(max_length=50, choices=Task.PRIORITY_CHOICES, default='medium')
     assigned_to = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True,
                                     related_name='assigned_issues')
+    accepted_date = models.DateTimeField(null=True, blank=True)
+    completed_date = models.DateTimeField(null=True, blank=True)
+    accepted_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True,
+                                    related_name='accepted_issues')
 
     def __str__(self):
         return self.title
