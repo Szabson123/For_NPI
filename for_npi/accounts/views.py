@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import TemplateView, FormView
 from django.contrib.auth.views import LoginView
-from .forms import UserSignIn, UserSignUp
+from .forms import UserSignIn, UserSignUpForm
 from .models import Profile, User
 from django.urls import reverse_lazy
 from django.db import transaction
@@ -9,9 +9,8 @@ from django.contrib.auth.models import Group
 from django.contrib.auth.decorators import login_required, user_passes_test
 
 
-
 class UserSignUp(FormView):
-    form_class = UserSignUp
+    form_class = UserSignUpForm
     template_name = 'sign_up.html'
     success_url = reverse_lazy('login')
 
@@ -19,26 +18,19 @@ class UserSignUp(FormView):
         with transaction.atomic():
             user = form.save()
             role = form.cleaned_data['role']
-            supervisor = form.cleaned_data.get('supervisor')
-            
-            # Upewniamy się, że używamy prawidłowej kluczowej wartości supervisor.
-            supervisor_instance = supervisor if supervisor else None
-            
-            # Stwórz profil użytkownika z dostępnymi danymi.
+
+            # Tworzymy profil użytkownika z danymi.
             profile = Profile.objects.create(
                 user=user,
                 role=role,
-                is_approved=False,  # domyślnie użytkownik nie jest zatwierdzony
-                supervisor=supervisor_instance
+                is_approved=False,
             )
-            
-            # Przypisz użytkownika do grupy.
-            group_name = 'Engineer' if role == 'engineer' else 'User'
-            group, _ = Group.objects.get_or_create(name=group_name)
+
+            # Przypisz użytkownika do odpowiedniej grupy na podstawie roli.
+            group, _ = Group.objects.get_or_create(name=role.capitalize())
             user.groups.add(group)
 
             return super().form_valid(form)
-
 class Login(LoginView):
     form_class = UserSignIn
     template_name = 'login.html'

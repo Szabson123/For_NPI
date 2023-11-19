@@ -35,6 +35,8 @@ class ProductionIssue(models.Model):
     report_date = models.DateTimeField(default=timezone.now)
     status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='open')
     priority = models.CharField(max_length=50, choices=Task.PRIORITY_CHOICES, default='medium')
+    assigned_to = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True,
+                                    related_name='assigned_issues')
 
     def __str__(self):
         return self.title

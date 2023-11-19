@@ -5,7 +5,7 @@ from .models import Profile
 User = get_user_model()
 
 
-class UserSignUp(UserCreationForm):
+class UserSignUpForm(UserCreationForm):
     role = forms.ChoiceField(choices= Profile.ROLE_CHOICES)
     supervisor = forms.ModelChoiceField(
         queryset=User.objects.filter(groups__name='Supervisor'),

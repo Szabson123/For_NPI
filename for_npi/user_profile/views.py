@@ -10,6 +10,9 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.db.models import Q
 from django.db.models.functions import TruncDate
+from django.contrib.auth.mixins import UserPassesTestMixin
+from django.views import View
+from accounts.models import Profile
 
 
 class TaskListView(ListView):
@@ -129,9 +132,39 @@ class ProductionIssueCreateView(CreateView):
         return super().form_valid(form)
 
 
-class ProductionIssueListView(ListView):
+class ProductionIssueListView(LoginRequiredMixin, ListView):
     model = ProductionIssue
     template_name = 'user_profile/main_page.html'
 
     def get_queryset(self):
         return ProductionIssue.objects.all().order_by('-report_date')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['subordinates'] = Profile.objects.filter(supervisor=self.request.user, is_approved=True)
+        return context
+
+
+class IssueAcceptView(UserPassesTestMixin, View):
+    def test_func(self):
+        return self.request.user.groups.filter(name='Supervisor').exists()
+
+    def post(self, request, pk):
+        issue = get_object_or_404(ProductionIssue, pk=pk)
+        issue.status = 'closed'
+        issue.save()
+        return redirect('user_profile:main_page')
+
+
+class IssueAssignView(UserPassesTestMixin, View):
+    def test_func(self):
+        return self.request.user.groups.filter(name='Supervisor').exists()
+
+    def post(self, request, issue_id):
+        subordinate_id = request.POST.get('subordinate')
+        issue = get_object_or_404(ProductionIssue, pk=issue_id)
+        issue.assigned_to_id = subordinate_id
+        issue.save()
+        return redirect('user_profile:main_page')
+
+

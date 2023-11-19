@@ -8,7 +8,7 @@ class Profile(models.Model):
     ROLE_CHOICES = (
         ('engineer', 'Engineer'),
         ('user', 'User'),
-        ('production', 'Production')
+        ('production', 'Production'),
     )
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     basic_info = models.CharField(max_length=500, blank=True)
@@ -23,8 +23,8 @@ class Profile(models.Model):
 
 @receiver(post_save, sender=User)
 def assign_user_group(sender, instance, created, **kwargs):
-    if created:
-        role = instance.profile.role if hasattr(instance, 'profile') else 'User'
-        group_name = 'Engineer' if role == 'engineer' else 'User'
+    if created and hasattr(instance, 'profile'):
+        role = instance.profile.role
+        group_name = role.capitalize()  # Używamy metody capitalize(), aby mieć pewność, że nazwa grupy zaczyna się z wielkiej litery.
         group, _ = Group.objects.get_or_create(name=group_name)
         instance.groups.add(group)

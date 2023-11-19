@@ -1,6 +1,7 @@
 from django.contrib.auth.models import Group
 
-def is_supervisor(request):
-    if not request.user.is_authenticated:
-        return {'is_supervisor': False}
-    return {'is_supervisor': request.user.groups.filter(name="Supervisor").exists()}
+def add_group_names(request):
+    if request.user.is_authenticated:
+        group_names = [group.name for group in request.user.groups.all()]
+        return {'group_names': group_names}
+    return {}
