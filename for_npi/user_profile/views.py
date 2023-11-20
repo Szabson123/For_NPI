@@ -158,14 +158,19 @@ class IssueAcceptView(UserPassesTestMixin, View):
 
 class IssueAssignView(UserPassesTestMixin, View):
     def test_func(self):
+        # Twoje istniejące warunki testowe...
         return self.request.user.groups.filter(name='Supervisor').exists()
 
-    def post(self, request, issue_id):
-        issue = get_object_or_404(ProductionIssue, pk=issue_id)
-        assigned_to_id = request.POST.get('assigned_to')
-        issue.assigned_to = get_object_or_404(User, pk=assigned_to_id)
+    def post(self, request, pk):
+        issue = get_object_or_404(ProductionIssue, pk=pk)
+        user_id = request.POST.get('subordinate')
+        user = get_object_or_404(User, pk=user_id)
+        issue.assigned_to = user
+        issue.accepted_by = user  # Przydzielającemu automatycznie staje się akceptantem
+        issue.accepted_date = timezone.now()  # Ustaw aktualną datę jako datę akceptacji
         issue.save()
         return redirect('user_profile:main_page')
+
 
 @login_required
 def accept_issue(request, pk):
