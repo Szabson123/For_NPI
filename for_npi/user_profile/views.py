@@ -13,6 +13,7 @@ from django.db.models.functions import TruncDate
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.views import View
 from accounts.models import Profile
+from django.contrib import messages
 
 
 class TaskListView(ListView):
@@ -74,7 +75,6 @@ def complete_task(request, pk):
         return redirect('user_profile:history_view')
     else:
         return redirect('user_profile:tasks_list')
-
 
 
 class MainPage(TemplateView):
@@ -188,8 +188,14 @@ def accept_issue(request, pk):
 def complete_issue(request, pk):
     issue = get_object_or_404(ProductionIssue, pk=pk)
     if request.method == 'POST':
-        issue.completed_date = timezone.now()
-        issue.save()
-        return redirect('user_profile:main_page')
+        if not issue.completed_date:  # Jeśli zadanie nie zostało jeszcze zakończone
+            issue.completed_date = timezone.now()
+            issue.save()
+            messages.success(request, 'Zadanie zostało zakończone.')  # Wiadomość o sukcesie
+        else:
+            messages.warning(request, 'Zadanie zostało już zakończone.')  # Wiadomość, jeśli zadanie było już zakończone
+        return redirect('user_profile:main_page')  # Przekieruj do strony szczegółów zadania
     else:
-        return redirect('user_profile:main_page')
+        messages.error(request, 'Nieprawidłowe żądanie.')  # Wiadomość o błędzie, jeśli żądanie nie jest POST
+        return redirect('user_profile:main_page')  # Przekieruj z powrotem do strony głównej
+

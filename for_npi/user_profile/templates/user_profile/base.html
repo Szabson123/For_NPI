@@ -35,6 +35,9 @@
                             <a class="nav-link" href="{% url 'user_profile:issue_create' %}">ADD ISSUE</a>
                         </li>
                     {% endif %}
+                    <li class="nav-item">
+                      <a class="nav-link" href="#">History Issues</a>
+                    </li>
                     {% if "Supervisor" in group_names %}
                         <li class="nav-item">
                             <a class="nav-link" href="#">Data Base</a>
@@ -84,8 +87,10 @@
             </div>
         </div>
     </nav>
+
     {% block content %}
     <!-- Tutaj pojawi się zawartość z szablonów podrzędnych -->
     {% endblock %}
+
 </body>
 </html>
