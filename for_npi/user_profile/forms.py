@@ -30,9 +30,12 @@ class TaskForm(forms.ModelForm):
 class ProductionIssueForm(forms.ModelForm):
     class Meta:
         model = ProductionIssue
-        fields = ['title', 'description', 'priority']
+        fields = ['title', 'description', 'priority', 'line', 'machine', 'type_of_issue']  # Dodaj nowe pola
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control'}),
             'description': forms.Textarea(attrs={'class': 'form-control'}),
             'priority': forms.Select(attrs={'class': 'form-control'}),
+            'line': forms.TextInput(attrs={'class': 'form-control'}),  # Dodaj odpowiednie atrybuty dla nowych pól
+            'machine': forms.TextInput(attrs={'class': 'form-control'}),
+            'type_of_issue': forms.TextInput(attrs={'class': 'form-control'})
         }

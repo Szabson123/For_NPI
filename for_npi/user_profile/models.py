@@ -29,18 +29,28 @@ class ProductionIssue(models.Model):
         ('open', 'Open'),
         ('closed', 'Closed')
     )
+    PRIORITY_CHOICES = (
+        ('low', 'Low'),
+        ('medium', 'Medium'),
+        ('high', 'High')
+    )
+    
     title = models.CharField(max_length=100)
     description = models.TextField()
     reported_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='reported_issues')
     report_date = models.DateTimeField(default=timezone.now)
     status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='open')
-    priority = models.CharField(max_length=50, choices=Task.PRIORITY_CHOICES, default='medium')
+    priority = models.CharField(max_length=50, choices=PRIORITY_CHOICES, default='medium')
     assigned_to = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True,
                                     related_name='assigned_issues')
     accepted_date = models.DateTimeField(null=True, blank=True)
     completed_date = models.DateTimeField(null=True, blank=True)
     accepted_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True,
                                     related_name='accepted_issues')
+    
+    line = models.CharField(max_length=100, blank=True, null=True)
+    machine = models.CharField(max_length=100, blank=True, null=True)
+    type_of_issue = models.CharField(max_length=100, blank=True, null=True)
 
     def __str__(self):
         return self.title
