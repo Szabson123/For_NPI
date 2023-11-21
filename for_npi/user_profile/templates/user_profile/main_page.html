@@ -1,6 +1,93 @@
 {% extends "user_profile/base.html" %}
 {% block content %}
 
+<style>
+    /* Stylowanie tła modala */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.6);
+  align-items: center; 
+  justify-content: center; 
+}
+
+/* Stylowanie kontenera zawartości */
+.modal-content {
+  position: relative;
+  background-color: #fefefe;
+  margin: 10% auto;
+  padding: 20px;
+  border-radius: 5px;
+  width: 40%;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  animation-name: animatetop;
+  animation-duration: 0.4s;
+  font-size: 18px;
+}
+
+/* Animacja otwierania */
+@keyframes animatetop {
+  from {top: -300px; opacity: 0} 
+  to {top: 0; opacity: 1}
+}
+
+/* Stylowanie przycisku zamknięcia */
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* Stylowanie przycisków */
+.btn {
+  border: none;
+  padding: 10px 20px;
+  margin: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  color: white;
+}
+
+.btn-secondary:hover {
+  background-color: #545b62;
+}
+
+/* Opcjonalnie: Media queries dla responsywności */
+@media screen and (max-width: 600px) {
+  .modal-content {
+    width: 80%;
+  }
+}
+</style>
+
+
 <div class="container my-5">
     <h2 class="text-center mb-4">Lista Zgłoszonych Problemów</h2>
     <div class="list-group">
@@ -39,14 +126,15 @@
 
                     <!-- Struktura Modala -->
                     <div id="myModal" class="modal">
-                        <!-- Zawartość Modala -->
                         <div class="modal-content">
-                            <span class="close">&times;</span>
-                            <p>Czy na pewno chcesz zakończyć zadanie?</p>
+                          <span class="close">&times;</span>
+                          <p>Czy na pewno chcesz zakończyć zadanie?</p>
+                          <div style="text-align: center;">
                             <button id="acceptBtn" class="btn btn-primary">Akceptuj</button>
                             <button id="cancelBtn" class="btn btn-secondary">Anuluj</button>
+                          </div>
                         </div>
-                    </div>
+                      </div>
                     {% endif %}
                   {% endif %}
                     {% if issue.accepted_date %}
@@ -93,55 +181,40 @@
 </div>
 
 
-<script>
-    document.querySelectorAll('.openModalBtn').forEach(button => {
-        button.addEventListener('click', function() {
-            var issueId = this.getAttribute('data-issue-id');
-            var modal = document.getElementById('myModal');
-            var acceptBtn = document.getElementById('acceptBtn');
-    
-            // Zaktualizuj funkcję kliknięcia przycisku "Akceptuj"
-            acceptBtn.onclick = function() {
-                document.getElementById("completeIssueForm-" + issueId).submit();
-            };
-    
-            modal.style.display = "block";
+    <script>
+        document.querySelectorAll('.openModalBtn').forEach(button => {
+            button.addEventListener('click', function() {
+                var issueId = this.getAttribute('data-issue-id');
+                var modal = document.getElementById('myModal');
+                var acceptBtn = document.getElementById('acceptBtn');
+                var cancelBtn = document.getElementById('cancelBtn'); 
+                var closeBtn = document.querySelector('.close');
+        
+                // Zaktualizuj funkcję kliknięcia przycisku "Akceptuj"
+                acceptBtn.onclick = function() {
+                    document.getElementById("completeIssueForm-" + issueId).submit();
+                };
+        
+                // Zamknięcie modala po kliknięciu "Anuluj"
+                cancelBtn.onclick = function() {
+                    modal.style.display = "none";
+                };
+        
+                // Zamknięcie modala po kliknięciu "X"
+                closeBtn.onclick = function() {
+                    modal.style.display = "none";
+                };
+        
+                modal.style.display = "block";
+            });
         });
-    });
-
-    var modal = document.getElementById("myModal");
-    var openBtn = document.getElementById("openModalBtn");
-    var acceptBtn = document.getElementById("acceptBtn");
-    var cancelBtn = document.getElementById("cancelBtn");
-    var span = document.getElementsByClassName("close")[0];
-    
-    // Otwarcie modala
-    openBtn.onclick = function() {
-      modal.style.display = "block";
-    }
-    
-    // Zamknięcie modala
-    function closeModal() {
-      modal.style.display = "none";
-    }
-    
-    // Zamknięcie modala po kliknięciu znaku X
-    span.onclick = closeModal;
-    
-    // Zamknięcie modala po kliknięciu "Anuluj"
-    cancelBtn.onclick = closeModal;
-    
-    // Logika dla przycisku "Akceptuj"
-    acceptBtn.onclick = function() {
-        document.getElementById("completeIssueForm").submit();
-      closeModal();
-    }
-    
-    // Zamknięcie modala po kliknięciu poza jego zawartością
-    window.onclick = function(event) {
-      if (event.target == modal) {
-        closeModal();
-      }
-    }
+        
+        // Zamknięcie modala po kliknięciu poza jego obszarem
+        window.onclick = function(event) {
+            var modal = document.getElementById('myModal');
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        };
     </script>
 {% endblock %}

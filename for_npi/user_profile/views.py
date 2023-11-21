@@ -72,9 +72,15 @@ def complete_task(request, pk):
     if request.method == 'POST':
         task.completed_date = timezone.now()
         task.save()
-        return redirect('user_profile:history_view')
+        messages.success(request, 'Task has been marked as completed.')
+        return redirect('user_profile:tasks_list')  # Przekierowanie do listy zadań
     else:
-        return redirect('user_profile:tasks_list')
+        return redirect('user_profile:task_detail', pk=task.pk)
+
+@login_required
+def tasks_list(request):
+    active_tasks = Task.objects.filter(completed_date__isnull=True) 
+    return render(request, 'user_profile/tasks_list.html', {'active_tasks': active_tasks})
 
 
 class MainPage(TemplateView):

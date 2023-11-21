@@ -12,7 +12,7 @@
       </tr>
     </thead>
     <tbody>
-      {% for task in tasks %}
+      {% for task in active_tasks %}
       <tr>
         <td>{{ task.author.first_name }} {{ task.author.last_name }}</td>
         <td>{{ task.title }}</td>
