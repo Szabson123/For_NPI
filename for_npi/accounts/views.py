@@ -17,7 +17,9 @@ class UserSignUp(FormView):
     def form_valid(self, form):
         with transaction.atomic():
             user = form.save()
-            role = form.cleaned_data['role']
+
+            role = form.cleaned_data.get('role')
+            supervisor = form.cleaned_data.get('supervisor')  # To jest obiekt User
 
             # Tworzymy profil użytkownika z danymi.
             profile = Profile.objects.create(
@@ -25,9 +27,12 @@ class UserSignUp(FormView):
                 role=role,
                 is_approved=False,
             )
+            if supervisor:
+                profile.supervisor = supervisor
+                profile.save()
 
             # Przypisz użytkownika do odpowiedniej grupy na podstawie roli.
-            group, _ = Group.objects.get_or_create(name=role.capitalize())
+            group, _ = Group.objects.get_or_create(name=role)
             user.groups.add(group)
 
             return super().form_valid(form)

@@ -12,7 +12,8 @@
       </tr>
     </thead>
     <tbody>
-      {% for task in active_tasks %}
+      {% for task in tasks %}
+      {% if not task.completed_date  %}
       <tr>
         <td>{{ task.author.first_name }} {{ task.author.last_name }}</td>
         <td>{{ task.title }}</td>
@@ -31,10 +32,7 @@
           >
         </td>
       </tr>
-      {% empty %}
-      <tr>
-        <td colspan="4">No tasks found.</td>
-      </tr>
+      {% endif %}
       {% endfor %}
     </tbody>
   </table>
