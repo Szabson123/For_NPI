@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import TemplateView, DetailView, ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from .forms import TaskForm, ProductionIssueForm
+from .forms import TaskForm, ProductionIssueForm, IssueFilterForm
 from django.urls import reverse_lazy
 from .models import Task, ProductionIssue
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -14,6 +14,25 @@ from django.contrib.auth.mixins import UserPassesTestMixin
 from django.views import View
 from accounts.models import Profile
 from django.contrib import messages
+
+
+def history_issue_list(request):
+    form = IssueFilterForm(request.GET or None)
+    issues = ProductionIssue.objects.all()
+
+    if form.is_valid():
+        title = form.cleaned_data.get('title')
+        status = form.cleaned_data.get('status')
+        priority = form.cleaned_data.get('priority')
+
+        if title:
+            issues = issues.filter(title__icontains=title)
+        if status:
+            issues = issues.filter(status=status)
+        if priority:
+            issues = issues.filter(priority=priority)
+
+    return render(request, 'user_profile/history_issue_list.html', {'form': form, 'issues': issues})
 
 
 class TaskListView(ListView):
@@ -190,18 +209,22 @@ def accept_issue(request, pk):
     else:
         return redirect('user_profile:main_page')
 
+
 @login_required
 def complete_issue(request, pk):
     issue = get_object_or_404(ProductionIssue, pk=pk)
     if request.method == 'POST':
         if not issue.completed_date:  # Jeśli zadanie nie zostało jeszcze zakończone
             issue.completed_date = timezone.now()
+            issue.status = 'closed'  # Ustaw status na 'closed'
             issue.save()
-            messages.success(request, 'Zadanie zostało zakończone.')  # Wiadomość o sukcesie
+            messages.success(request, 'Zadanie zostało zakończone i zamknięte.')  # Wiadomość o sukcesie
         else:
             messages.warning(request, 'Zadanie zostało już zakończone.')  # Wiadomość, jeśli zadanie było już zakończone
-        return redirect('user_profile:main_page')  # Przekieruj do strony szczegółów zadania
+        return redirect('user_profile:main_page')  # Przekieruj do strony głównej profilu użytkownika
     else:
         messages.error(request, 'Nieprawidłowe żądanie.')  # Wiadomość o błędzie, jeśli żądanie nie jest POST
         return redirect('user_profile:main_page')  # Przekieruj z powrotem do strony głównej
+
+
 

@@ -39,3 +39,24 @@ class ProductionIssueForm(forms.ModelForm):
             'machine': forms.TextInput(attrs={'class': 'form-control'}),
             'type_of_issue': forms.TextInput(attrs={'class': 'form-control'})
         }
+
+
+class IssueFilterForm(forms.Form):
+    STATUS_CHOICES = [
+        ('', 'Any Status'),  # Default choice
+        ('open', 'Open'),
+        ('closed', 'Closed'),
+        # Dodaj więcej statusów jeśli potrzebujesz
+    ]
+
+    PRIORITY_CHOICES = [
+        ('', 'Any Priority'),  # Default choice
+        ('high', 'High'),
+        ('medium', 'Medium'),
+        ('low', 'Low'),
+        # Dodaj więcej priorytetów jeśli potrzebujesz
+    ]
+
+    title = forms.CharField(required=False)
+    status = forms.ChoiceField(choices=STATUS_CHOICES, required=False)
+    priority = forms.ChoiceField(choices=PRIORITY_CHOICES, required=False)

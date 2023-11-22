@@ -1,0 +1,41 @@
+{% extends "user_profile/base.html" %}
+
+{% block content %}
+
+<form method="get">
+    {{ form.as_p }}
+    <button type="submit">Filtruj</button>
+</form>
+
+<table>
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Status</th>
+            <th>Priority</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for issue in issues %}
+        <tr>
+            <td>{{ issue.title }}</td>
+            <td>{{ issue.get_status_display }}</td>
+            <td>{{ issue.get_priority_display }}</td>
+            <td><a href="#">View</a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+<script type="text/javascript">
+    document.getElementById('id_status').onchange = function() {
+        this.form.submit();
+    };
+    document.getElementById('id_priority').onchange = function() {
+        this.form.submit();
+    };
+</script>
+
+{% endblock %}
