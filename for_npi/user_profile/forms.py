@@ -60,3 +60,10 @@ class IssueFilterForm(forms.Form):
     title = forms.CharField(required=False)
     status = forms.ChoiceField(choices=STATUS_CHOICES, required=False)
     priority = forms.ChoiceField(choices=PRIORITY_CHOICES, required=False)
+    line_choices = [('', 'Any Line')] + [(line, line) for line in ProductionIssue.objects.values_list('line', flat=True).distinct()]
+    machine_choices = [('', 'Any Machine')] + [(machine, machine) for machine in ProductionIssue.objects.values_list('machine', flat=True).distinct()]
+    type_of_issue_choices = [('', 'Any Type of Issue')] + [(issue_type, issue_type) for issue_type in ProductionIssue.objects.values_list('type_of_issue', flat=True).distinct()]
+
+    line = forms.ChoiceField(choices=line_choices, required=False)
+    machine = forms.ChoiceField(choices=machine_choices, required=False)
+    type_of_issue = forms.ChoiceField(choices=type_of_issue_choices, required=False)

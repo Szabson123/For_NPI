@@ -35,7 +35,7 @@ class ProductionIssue(models.Model):
         ('high', 'High')
     )
     
-    title = models.CharField(max_length=100)
+    title = models.CharField(max_length=25)
     description = models.TextField()
     reported_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='reported_issues')
     report_date = models.DateTimeField(default=timezone.now)

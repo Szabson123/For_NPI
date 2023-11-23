@@ -24,6 +24,11 @@ def history_issue_list(request):
         title = form.cleaned_data.get('title')
         status = form.cleaned_data.get('status')
         priority = form.cleaned_data.get('priority')
+        line = form.cleaned_data.get('line')
+        machine = form.cleaned_data.get('machine')
+        type_of_issue = form.cleaned_data.get('type_of_issue')
+
+        issues = ProductionIssue.objects.all()
 
         if title:
             issues = issues.filter(title__icontains=title)
@@ -31,6 +36,12 @@ def history_issue_list(request):
             issues = issues.filter(status=status)
         if priority:
             issues = issues.filter(priority=priority)
+        if line:
+            issues = issues.filter(line=line)
+        if machine:
+            issues = issues.filter(machine=machine)
+        if type_of_issue:
+            issues = issues.filter(type_of_issue=type_of_issue)
 
     return render(request, 'user_profile/history_issue_list.html', {'form': form, 'issues': issues})
 
@@ -74,7 +85,7 @@ class TaskDetailView(DetailView):
     
 
 
-@login_required
+@login_required(login_url='login')
 def accept_task(request, pk):
     task = get_object_or_404(Task, pk=pk)
     if request.method == 'POST':
