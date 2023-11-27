@@ -2,7 +2,7 @@ from .models import Task
 from django import forms
 from accounts.models import User
 from .models import ProductionIssue
-
+from django.db.models import Exists, OuterRef
 
 class TaskForm(forms.ModelForm):
     class Meta:
@@ -67,3 +67,28 @@ class IssueFilterForm(forms.Form):
     line = forms.ChoiceField(choices=line_choices, required=False)
     machine = forms.ChoiceField(choices=machine_choices, required=False)
     type_of_issue = forms.ChoiceField(choices=type_of_issue_choices, required=False)
+
+    reported_by = forms.ModelChoiceField(
+        queryset=User.objects.filter(
+            Exists(ProductionIssue.objects.filter(reported_by=OuterRef('pk')))
+        ).distinct(),
+        required=False,
+        label='Reported by'
+    )
+
+    accepted_by = forms.ModelChoiceField(
+        queryset=User.objects.filter(
+            Exists(ProductionIssue.objects.filter(accepted_by=OuterRef('pk')))
+        ).distinct(),
+        required=False,
+        label='Accepted by'
+    )
+
+    def __init__(self, *args, **kwargs):
+        super(IssueFilterForm, self).__init__(*args, **kwargs)
+        self.fields['reported_by'].label_from_instance = self.label_from_user_instance
+        self.fields['accepted_by'].label_from_instance = self.label_from_user_instance
+
+    def label_from_user_instance(self, obj):
+        profile = obj.profile
+        return f"{profile.user.first_name} {profile.user.last_name}"

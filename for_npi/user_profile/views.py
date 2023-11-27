@@ -27,6 +27,8 @@ def history_issue_list(request):
         line = form.cleaned_data.get('line')
         machine = form.cleaned_data.get('machine')
         type_of_issue = form.cleaned_data.get('type_of_issue')
+        reported_by = form.cleaned_data.get('reported_by')
+        accepted_by = form.cleaned_data.get('accepted_by')
 
         issues = ProductionIssue.objects.all()
 
@@ -42,6 +44,10 @@ def history_issue_list(request):
             issues = issues.filter(machine=machine)
         if type_of_issue:
             issues = issues.filter(type_of_issue=type_of_issue)
+        if reported_by:
+            issues = issues.filter(reported_by=reported_by)
+        if accepted_by:
+            issues = issues.filter(accepted_by=accepted_by)
 
     return render(request, 'user_profile/history_issue_list.html', {'form': form, 'issues': issues})
 
