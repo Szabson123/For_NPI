@@ -9,7 +9,7 @@ class UserSignUpForm(UserCreationForm):
     role = forms.ChoiceField(choices=Profile.ROLE_CHOICES)
     supervisor = forms.ModelChoiceField(
         queryset=User.objects.filter(groups__name='Supervisor'),
-        required=False
+        required=True
     )
 
     class Meta(UserCreationForm.Meta):

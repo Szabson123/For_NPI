@@ -1,4 +1,5 @@
-{% extends "user_profile/base.html" %} {% block content %}
+{% extends "user_profile/base.html" %}
+{% block content %}
 
 <div class="container mt-5">
   <div class="row">
@@ -6,46 +7,30 @@
           <h2 class="text-center mb-4">Rejestracja</h2>
           <form method="post" action="{% url 'signup' %}" class="needs-validation" novalidate>
               {% csrf_token %}
-              <div class="form-group mb-3">
-                  <label for="id_first_name">Imię</label>
-                  <input type="text" name="first_name" class="form-control" id="id_first_name" placeholder="Wpisz swoje imię" required>
-              </div>
-              <div class="form-group mb-3">
-                  <label for="id_last_name">Nazwisko</label>
-                  <input type="text" name="last_name" class="form-control" id="id_last_name" placeholder="Wpisz swoje nazwisko" required>
-              </div>
-              <div class="form-group mb-3">
-                  <label for="id_username">Nazwa użytkownika</label>
-                  <input type="text" name="username" class="form-control" id="id_username" placeholder="Wybierz nazwę użytkownika" required>
-              </div>
-              <div class="form-group mb-3">
-                  <label for="id_email">Adres email</label>
-                  <input type="email" name="email" class="form-control" id="id_email" placeholder="Wpisz swój adres email" required>
-              </div>
-              <div class="form-group mb-3">
-                  <label for="id_password1">Hasło</label>
-                  <input type="password" name="password1" class="form-control" id="id_password1" placeholder="Wpisz hasło" required>
-              </div>
-              <div class="form-group mb-3">
-                  <label for="id_password2">Potwierdzenie hasła</label>
-                  <input type="password" name="password2" class="form-control" id="id_password2" placeholder="Potwierdź hasło" required>
-              </div>
-              <div class="form-group mb-3">
-                  <label for="id_role">Rola</label>
-                  <select name="role" class="form-control" id="id_role" required>
-                      {% for role in form.fields.role.choices %}
-                          <option value="{{ role.0 }}">{{ role.1 }}</option>
-                      {% endfor %}
-                  </select>
-              </div>
-              <div class="form-group mb-3">
-                  <label for="id_supervisor">Supervisor</label>
-                  <select name="supervisor" class="form-control" id="id_supervisor" required>
-                      {% for supervisor in form.fields.supervisor.queryset %}
-                          <option value="{{ supervisor.id }}">{{ supervisor.get_full_name }}</option>
-                      {% endfor %}
-                  </select>
-              </div>
+
+              <!-- Wyświetlanie ogólnych błędów formularza -->
+              {% if form.non_field_errors %}
+                <div class="alert alert-danger" role="alert">
+                  {% for error in form.non_field_errors %}
+                    {{ error }}
+                  {% endfor %}
+                </div>
+              {% endif %}
+
+              <!-- Wyświetlanie błędów dla poszczególnych pól formularza -->
+              {% for field in form %}
+                <div class="form-group mb-3">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.help_text %}
+                      <small class="form-text text-muted">{{ field.help_text }}</small>
+                    {% endif %}
+                    {% for error in field.errors %}
+                      <div class="invalid-feedback" style="display: block;">{{ error }}</div>
+                    {% endfor %}
+                </div>
+              {% endfor %}
+
               <button type="submit" class="btn btn-primary w-100">Zarejestruj się</button>
           </form>
       </div>

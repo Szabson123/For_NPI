@@ -3,15 +3,15 @@
 {% block content %}
 <div class="container mt-4">
     <h1>List of Issues</h1>
-        
+
 
 <table class="table">
     <thead>
         <form method="get">
             <tr>
-                
+
                     <button class = "btn btn-primary btn-sm" type="submit" id="clearFilters">Wyczyść filtry</button>
-                
+
                 <th>Title {{ form.title }}</th>
                 <th>Status {{ form.status }}</th>
                 <th>Priority {{ form.priority }}</th>
@@ -55,13 +55,13 @@
         this.form.submit();
     }
     document.getElementById('clearFilters').addEventListener('click', function() {
-        document.getElementById('id_status').value = ''; 
-        document.getElementById('id_priority').value = ''; 
+        document.getElementById('id_status').value = '';
+        document.getElementById('id_priority').value = '';
         document.getElementById('id_line').value = '';
         document.getElementById('id_machine').value = '';
         document.getElementById('id_type_of_issue').value = '';
 
     });
 </script>
-
+</div>
 {% endblock %}

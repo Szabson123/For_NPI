@@ -31,11 +31,15 @@ class UserSignUp(FormView):
                 profile.supervisor = supervisor
                 profile.save()
 
-            # Przypisz użytkownika do odpowiedniej grupy na podstawie roli.
-            group, _ = Group.objects.get_or_create(name=role)
+            # Normalizujemy nazwę roli do formatu z wielką literą na początku.
+            normalized_role_name = role.capitalize()
+
+            # Przypisz użytkownika do istniejącej grupy lub utwórz nową, jeśli nie istnieje.
+            group, _ = Group.objects.get_or_create(name=normalized_role_name)
             user.groups.add(group)
 
             return super().form_valid(form)
+
 class Login(LoginView):
     form_class = UserSignIn
     template_name = 'login.html'
