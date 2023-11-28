@@ -238,22 +238,36 @@ def complete_issue(request, pk):
             messages.success(request, 'Zadanie zostało zakończone i zamknięte.')  # Wiadomość o sukcesie
         else:
             messages.warning(request, 'Zadanie zostało już zakończone.')  # Wiadomość, jeśli zadanie było już zakończone
-        return redirect('user_profile:main_page')  # Przekieruj do strony głównej profilu użytkownika
+        return redirect('user_profile:history_issue_list')  # Przekieruj do strony z historią zadań
     else:
         messages.error(request, 'Nieprawidłowe żądanie.')  # Wiadomość o błędzie, jeśli żądanie nie jest POST
-        return redirect('user_profile:main_page')  # Przekieruj z powrotem do strony głównej
+        return redirect('user_profile:history_issue_list')  # Przekieruj z powrotem do strony z historią zadań
 
 
 def issue_fix_create_view(request, issue_id):
     issue = get_object_or_404(ProductionIssue, id=issue_id)
+
+    # Sprawdź, czy zgłoszenie nie zostało już zamknięte
+    if issue.status == 'closed':
+        messages.error(request, 'To zgłoszenie zostało już zamknięte.')
+        return redirect('user_profile:history_issue_list')
+
     if request.method == 'POST':
         form = IssueFixForm(request.POST)
         if form.is_valid():
             issue_fix = form.save(commit=False)
             issue_fix.production_issue = issue
+
+            # Tutaj zamykamy zgłoszenie
+            issue.completed_date = timezone.now()
+            issue.status = 'closed'
+            issue.save()
+
             issue_fix.save()
-            return redirect(issue.get_absolute_url())
+            messages.success(request, 'Rozwiązanie problemu zostało zapisane i zgłoszenie zostało zamknięte.')
+            return redirect('user_profile:history_issue_list')
     else:
         form = IssueFixForm()
-    
+
     return render(request, 'user_profile/issue_fix_form.html', {'form': form, 'issue': issue})
+
