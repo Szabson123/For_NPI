@@ -1,7 +1,7 @@
 from .models import Task
 from django import forms
 from accounts.models import User
-from .models import ProductionIssue
+from .models import ProductionIssue, IssueFix
 from django.db.models import Exists, OuterRef
 
 class TaskForm(forms.ModelForm):
@@ -92,3 +92,17 @@ class IssueFilterForm(forms.Form):
     def label_from_user_instance(self, obj):
         profile = obj.profile
         return f"{profile.user.first_name} {profile.user.last_name}"
+
+
+class IssueFixForm(forms.ModelForm):
+    class Meta:
+        model = IssueFix
+        fields = ['cause', 'action']
+        widgets = {
+            'cause': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+            'action': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+        }
+        labels = {
+            'cause': "Przyczyna",
+            'action': "Co zrobiłeś, żeby naprawić",
+        }

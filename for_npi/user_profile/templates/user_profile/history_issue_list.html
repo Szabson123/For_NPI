@@ -13,6 +13,7 @@
         <form method="get">
             <tr>
                 <button class = "btn btn-danger btn-sm" type="submit" id="clearFilters">Wyczyść filtry</button>
+                
                 <th>Title {{ form.title }}</th>
                 <th>Status {{ form.status }}</th>
                 <th>Priority {{ form.priority }}</th>
@@ -21,7 +22,7 @@
                 <th>Type {{ form.type_of_issue }}</th>
                 <th>Filing date {{ issue.report_date|date:"d.m.Y H:i" }}</th>
                 <th>Reported by {{ form.reported_by }}</th>
-                <th>Completed on: {{ issue.completed_date }}</th>
+                <th>Completed on: {{ issue.completed_date|date:"d.m.Y H:i" }}</th>
                 <th>Completed by: {{ form.accepted_by }}</th>
                 <th>Actions</th>
             </tr>
@@ -30,6 +31,7 @@
     <tbody>
         {% for issue in issues %}
         <tr>
+
             <td>{{ issue.title }}</td>
             <td>{{ issue.get_status_display }}</td>
             <td>{{ issue.get_priority_display }}</td>
@@ -38,7 +40,7 @@
             <td>{{ issue.type_of_issue }}</td>
             <td>{{ issue.report_date|date:"d.m.Y H:i" }}</td>
             <td>{{ issue.reported_by.get_full_name }}</td>
-            <td>{{ issue.completed_date }}</td>
+            <td>{{ issue.completed_date|date:"d.m.Y H:i" }}</td>
             {% if issue.completed_date %}
                 <td>{{ issue.accepted_by.get_full_name }}</td>
             {% else %}

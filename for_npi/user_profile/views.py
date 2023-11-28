@@ -1,9 +1,9 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import TemplateView, DetailView, ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from .forms import TaskForm, ProductionIssueForm, IssueFilterForm
+from .forms import TaskForm, ProductionIssueForm, IssueFilterForm, IssueFixForm
 from django.urls import reverse_lazy
-from .models import Task, ProductionIssue
+from .models import Task, ProductionIssue, IssueFix
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
@@ -244,4 +244,13 @@ def complete_issue(request, pk):
         return redirect('user_profile:main_page')  # Przekieruj z powrotem do strony głównej
 
 
+def issue_fix_create_view(request):
+    if request.method == 'POST':
+        form = IssueFixForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('issue_fix_success')  # Nazwa URL dla strony potwierdzenia
+    else:
+        form = IssueFixForm()
+    return render(request, 'issue_fix_form.html', {'form': form})
 

@@ -1,0 +1,9 @@
+{% extends "user_profile/base.html" %}
+{% block content %}
+    <h2>Zgłoś rozwiązanie problemu</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Wyślij</button>
+    </form>
+{% endblock %}

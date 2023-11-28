@@ -54,3 +54,9 @@ class ProductionIssue(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class IssueFix(models.Model):
+    cause = models.TextField(verbose_name="Przyczyna")
+    action = models.TextField(verbose_name="Co zrobiłeś, żeby naprawić")
+
