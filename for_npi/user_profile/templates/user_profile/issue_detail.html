@@ -1,0 +1,35 @@
+{% extends "user_profile/base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h2 class="mb-0">Szczegóły zadania: {{ issue.title }}</h2>
+        </div>
+        <div class="card-body">
+            <p><strong>Opis:</strong> {{ issue.description }}</p>
+            <p><strong>Linia:</strong> {{ issue.line }}</p>
+            <p><strong>Maszyna:</strong> {{ issue.machine }}</p>
+            <p><strong>Zgłoszone przez:</strong> {{ issue.reported_by.get_full_name }}</p>
+            <p><strong>Data zgłoszenia:</strong> {{ issue.report_date|date:"Y-m-d H:i" }}</p>
+            {% if issue.completed_date %}
+            <p><strong>Data zakończenia:</strong> {{ issue.report_date|date:"Y-m-d H:i" }}</p>
+            <p><strong>Zakończył:</strong> {{ issue.accepted_by.get_full_name }} </p>
+            {% endif %}
+            
+            <p><strong>Status:</strong> {{ issue.get_status_display }}</p>
+
+            {% if issue_fix %}
+            <h3 class="mt-3">Rozwiązanie problemu:</h3>
+            <p><strong>Przyczyna:</strong> {{ issue_fix.cause }}</p>
+            <p><strong>Co zrobiłeś, żeby naprawić:</strong> {{ issue_fix.action }}</p>
+            {% else %}
+            <p>Brak zapisanych rozwiązań dla tego zgłoszenia.</p>
+            {% endif %}
+        </div>
+        <div class="card-footer">
+            <a href="{% url 'user_profile:history_issue_list' %}" class="btn btn-secondary">Powrót do listy</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

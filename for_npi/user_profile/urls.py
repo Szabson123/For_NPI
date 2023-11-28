@@ -29,4 +29,5 @@ urlpatterns = [
     path('history_issue_list/', views.history_issue_list, name='history_issue_list'),
 
     path('issue/<int:issue_id>/fix/', views.issue_fix_create_view, name='issue_fix_create'),
+    path('issue/<int:issue_id>/', views.issue_detail_view, name='issue_detail'),
 ]

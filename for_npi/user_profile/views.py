@@ -271,3 +271,14 @@ def issue_fix_create_view(request, issue_id):
 
     return render(request, 'user_profile/issue_fix_form.html', {'form': form, 'issue': issue})
 
+
+
+
+def issue_detail_view(request, issue_id):
+    issue = get_object_or_404(ProductionIssue, id=issue_id)
+    issue_fix = IssueFix.objects.filter(production_issue=issue).first()
+
+    return render(request, 'user_profile/issue_detail.html', {
+        'issue': issue,
+        'issue_fix': issue_fix,
+    })
