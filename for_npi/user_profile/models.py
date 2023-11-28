@@ -56,7 +56,13 @@ class ProductionIssue(models.Model):
         return self.title
 
 
+
+def get_default_issue():
+    return ProductionIssue.objects.first().id
 class IssueFix(models.Model):
+    production_issue = models.ForeignKey(ProductionIssue, on_delete=models.CASCADE, related_name='issue_fixes', default=get_default_issue)
     cause = models.TextField(verbose_name="Przyczyna")
     action = models.TextField(verbose_name="Co zrobiłeś, żeby naprawić")
 
+    def __str__(self):
+        return f"Naprawa dla {self.production_issue.title}"

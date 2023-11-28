@@ -130,7 +130,7 @@
                           <span class="close">&times;</span>
                           <p>Czy na pewno chcesz zakończyć zadanie?</p>
                           <div style="text-align: center;">
-                            <button id="acceptBtn" class="btn btn-primary">Akceptuj</button>
+                            <a id="acceptBtn" href="{% url 'user_profile:issue_fix_create' issue.id %}" class="btn btn-primary">Akceptuj</a>
                             <button id="cancelBtn" class="btn btn-secondary">Anuluj</button>
                           </div>
                         </div>

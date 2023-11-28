@@ -244,13 +244,16 @@ def complete_issue(request, pk):
         return redirect('user_profile:main_page')  # Przekieruj z powrotem do strony głównej
 
 
-def issue_fix_create_view(request):
+def issue_fix_create_view(request, issue_id):
+    issue = get_object_or_404(ProductionIssue, id=issue_id)
     if request.method == 'POST':
         form = IssueFixForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('issue_fix_success')  # Nazwa URL dla strony potwierdzenia
+            issue_fix = form.save(commit=False)
+            issue_fix.production_issue = issue
+            issue_fix.save()
+            return redirect(issue.get_absolute_url())
     else:
         form = IssueFixForm()
-    return render(request, 'issue_fix_form.html', {'form': form})
-
+    
+    return render(request, 'user_profile/issue_fix_form.html', {'form': form, 'issue': issue})
