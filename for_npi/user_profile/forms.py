@@ -41,53 +41,36 @@ class ProductionIssueForm(forms.ModelForm):
         }
 
 
-class IssueFilterForm(forms.Form):
-    STATUS_CHOICES = [
-        ('', 'Any Status'),  # Default choice
-        ('open', 'Open'),
-        ('closed', 'Closed'),
-        # Dodaj więcej statusów jeśli potrzebujesz
-    ]
 
-    PRIORITY_CHOICES = [
-        ('', 'Any Priority'),  # Default choice
-        ('high', 'High'),
-        ('medium', 'Medium'),
-        ('low', 'Low'),
-        # Dodaj więcej priorytetów jeśli potrzebujesz
-    ]
+class IssueFilterForm(forms.Form):
+    # Stałe choices dla statusu i priorytetu
+    STATUS_CHOICES = [('', 'Any Status'), ('open', 'Open'), ('closed', 'Closed')]
+    PRIORITY_CHOICES = [('', 'Any Priority'), ('high', 'High'), ('medium', 'Medium'), ('low', 'Low')]
 
     title = forms.CharField(required=False)
     status = forms.ChoiceField(choices=STATUS_CHOICES, required=False)
     priority = forms.ChoiceField(choices=PRIORITY_CHOICES, required=False)
-    line_choices = [('', 'Any Line')] + [(line, line) for line in ProductionIssue.objects.values_list('line', flat=True).distinct()]
-    machine_choices = [('', 'Any Machine')] + [(machine, machine) for machine in ProductionIssue.objects.values_list('machine', flat=True).distinct()]
-    type_of_issue_choices = [('', 'Any Type of Issue')] + [(issue_type, issue_type) for issue_type in ProductionIssue.objects.values_list('type_of_issue', flat=True).distinct()]
-
-    line = forms.ChoiceField(choices=line_choices, required=False)
-    machine = forms.ChoiceField(choices=machine_choices, required=False)
-    type_of_issue = forms.ChoiceField(choices=type_of_issue_choices, required=False)
-
-    reported_by = forms.ModelChoiceField(
-        queryset=User.objects.filter(
-            Exists(ProductionIssue.objects.filter(reported_by=OuterRef('pk')))
-        ).distinct(),
-        required=False,
-        label='Reported by'
-    )
-
-    accepted_by = forms.ModelChoiceField(
-        queryset=User.objects.filter(
-            Exists(ProductionIssue.objects.filter(accepted_by=OuterRef('pk')))
-        ).distinct(),
-        required=False,
-        label='Accepted by'
-    )
+    line = forms.ChoiceField(required=False)
+    machine = forms.ChoiceField(required=False)
+    type_of_issue = forms.ChoiceField(required=False)
+    reported_by = forms.ModelChoiceField(queryset=User.objects.none(), required=False, label='Reported by')
+    accepted_by = forms.ModelChoiceField(queryset=User.objects.none(), required=False, label='Accepted by')
 
     def __init__(self, *args, **kwargs):
         super(IssueFilterForm, self).__init__(*args, **kwargs)
-        self.fields['reported_by'].label_from_instance = self.label_from_user_instance
-        self.fields['accepted_by'].label_from_instance = self.label_from_user_instance
+        # Dynamiczne ustawienie choices dla line, machine i type_of_issue
+        self.fields['line'].choices = [('', 'Any Line')] + [(line, line) for line in ProductionIssue.objects.values_list('line', flat=True).distinct()]
+        self.fields['machine'].choices = [('', 'Any Machine')] + [(machine, machine) for machine in ProductionIssue.objects.values_list('machine', flat=True).distinct()]
+        self.fields['type_of_issue'].choices = [('', 'Any Type of Issue')] + [(issue_type, issue_type) for issue_type in ProductionIssue.objects.values_list('type_of_issue', flat=True).distinct()]
+
+        # Dynamiczne ustawienie queryset dla reported_by i accepted_by
+        self.fields['reported_by'].queryset = User.objects.filter(Exists(ProductionIssue.objects.filter(reported_by=OuterRef('pk')))).distinct()
+        self.fields['accepted_by'].queryset = User.objects.filter(Exists(ProductionIssue.objects.filter(accepted_by=OuterRef('pk')))).distinct()
+
+        # Ustawienie funkcji formatującej wyświetlanie użytkowników
+        self.fields['reported_by'].label_from_instance = lambda obj: f"{obj.first_name} {obj.last_name}"
+        self.fields['accepted_by'].label_from_instance = lambda obj: f"{obj.first_name} {obj.last_name}"
+
 
     def label_from_user_instance(self, obj):
         profile = obj.profile
