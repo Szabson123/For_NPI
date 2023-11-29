@@ -1,92 +1,92 @@
 {% extends "user_profile/base.html" %}
 
 {% block content %}
-<div class="container">
-<div class="container mt-4 text-center bg-light p-3 rounded">
-    <h1>List of Issues</h1>
-</div>
+<div class="container text-center">
+    <h1 class="mt-4">List of Issues</h1>
 
+    <form method="get">
+        <div class="text-right mb-2">
+            <button class="btn btn-danger btn-sm" type="submit" id="clearFilters">Wyczyść filtry</button>
+        </div>
+        <div class="d-flex justify-content-center">
+            <table class="table table-striped table-hover mt-4">
+                <thead>
+                        <tr>
+                            <th style="min-width: 220px;">Title {{ form.title }}</th>
+                            <th style="min-width: 120px;">Status {{ form.status }}</th>
+                            <th style="min-width: 130px;">Priority {{ form.priority }}</th>
+                            <th style="min-width: 120px;">Line {{ form.line }}</th>
+                            <th style="min-width: 135px;">Machine {{ form.machine }}</th>
+                            <th style="min-width: 170px;">Type {{ form.type_of_issue }}</th>
+                            <th>
+                                Filing date from: <input for="id_start_date" name="start_date" type="date" class="form-control" value="{{ request.GET.start_date }}">
+                            </th>
+                            <th style="min-width: 170px;">Reported by {{ form.reported_by }}</th>
+                            <th style="min-width: 170px;">Completed on: {{ issue.completed_date|date:"d.m.Y H:i" }}</th>
+                            <th style="min-width: 170px;">Completed by: {{ form.accepted_by }}</th>
+                            <th>Actions</th>
+                        </tr>
+                    </form>
+                </thead>
+                <tbody>
+                    {% for issue in issues %}
+                    <tr>
 
+                        <td>{{ issue.title }}</td>
+                        <td>{{ issue.get_status_display }}</td>
+                        <td>{{ issue.get_priority_display }}</td>
+                        <td>{{ issue.line }}</td>
+                        <td>{{ issue.machine }}</td>
+                        <td>{{ issue.type_of_issue }}</td>
+                        <td>{{ issue.report_date|date:"d.m.Y H:i" }}</td>
+                        <td>{{ issue.reported_by.get_full_name }}</td>
+                        <td>{{ issue.completed_date|date:"d.m.Y H:i" }}</td>
+                        {% if issue.completed_date %}
+                            <td>{{ issue.accepted_by.get_full_name }}</td>
+                        {% else %}
+                            <td>None</td>
+                        {% endif %}
+                        <td class="text-center"><a href="{% url 'user_profile:issue_detail' issue.id %}" class="btn btn-primary btn-sm">View</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+    </div>          
 
-<table class="table table-striped table-hover table-responsive">
-    <thead>
-        <form method="get">
-            <tr>
-                <button class = "btn btn-danger btn-sm" type="submit" id="clearFilters">Wyczyść filtry</button>
-                
-                <th>Title {{ form.title }}</th>
-                <th>Status {{ form.status }}</th>
-                <th>Priority {{ form.priority }}</th>
-                <th>Line {{ form.line }}</th>
-                <th>Machine {{ form.machine }}</th>
-                <th>Type {{ form.type_of_issue }}</th>
-                <th>Filing date {{ issue.report_date|date:"d.m.Y H:i" }}</th>
-                <th>Reported by {{ form.reported_by }}</th>
-                <th>Completed on: {{ issue.completed_date|date:"d.m.Y H:i" }}</th>
-                <th>Completed by: {{ form.accepted_by }}</th>
-                <th>Actions</th>
-            </tr>
-        </form>
-    </thead>
-    <tbody>
-        {% for issue in issues %}
-        <tr>
-
-            <td>{{ issue.title }}</td>
-            <td>{{ issue.get_status_display }}</td>
-            <td>{{ issue.get_priority_display }}</td>
-            <td>{{ issue.line }}</td>
-            <td>{{ issue.machine }}</td>
-            <td>{{ issue.type_of_issue }}</td>
-            <td>{{ issue.report_date|date:"d.m.Y H:i" }}</td>
-            <td>{{ issue.reported_by.get_full_name }}</td>
-            <td>{{ issue.completed_date|date:"d.m.Y H:i" }}</td>
-            {% if issue.completed_date %}
-                <td>{{ issue.accepted_by.get_full_name }}</td>
-            {% else %}
-                <td>None</td>
-            {% endif %}
-            <td class="text-center"><a href="{% url 'user_profile:issue_detail' issue.id %}" class="btn btn-primary btn-sm">View</a></td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-
-
-<script type="text/javascript">
-    document.getElementById('id_status').onchange = function() {
+    <script type="text/javascript">
+        document.getElementById('id_status').onchange = function() {
+            this.form.submit();
+        };
+        document.getElementById('id_priority').onchange = function() {
+            this.form.submit();
+        };
+        document.getElementById('id_line').onchange = function() {
+            this.form.submit();
+        };
+        document.getElementById('id_machine').onchange = function() {
+            this.form.submit();
+        };
+        document.getElementById('id_type_of_issue').onchange = function() {
+            this.form.submit();
+        };
+        document.getElementById('id_reported_by').onchange = function() {
         this.form.submit();
-    };
-    document.getElementById('id_priority').onchange = function() {
-        this.form.submit();
-    };
-    document.getElementById('id_line').onchange = function() {
-        this.form.submit();
-    };
-    document.getElementById('id_machine').onchange = function() {
-        this.form.submit();
-    };
-    document.getElementById('id_type_of_issue').onchange = function() {
-        this.form.submit();
-    };
-    document.getElementById('id_reported_by').onchange = function() {
-    this.form.submit();
-    };
+        };
 
-    document.getElementById('id_accepted_by').onchange = function() {
-        this.form.submit();
-    };
-    document.getElementById('clearFilters').addEventListener('click', function() {
-        document.getElementById('id_status').value = '';
-        document.getElementById('id_priority').value = '';
-        document.getElementById('id_line').value = '';
-        document.getElementById('id_machine').value = '';
-        document.getElementById('id_type_of_issue').value = '';
-        document.getElementById('id_reported_by').value = '';
-        document.getElementById('id_accepted_by').value = '';
+        document.getElementById('id_accepted_by').onchange = function() {
+            this.form.submit();
+        };
+        document.getElementById('clearFilters').addEventListener('click', function() {
+            document.getElementById('id_status').value = '';
+            document.getElementById('id_priority').value = '';
+            document.getElementById('id_line').value = '';
+            document.getElementById('id_machine').value = '';
+            document.getElementById('id_type_of_issue').value = '';
+            document.getElementById('id_reported_by').value = '';
+            document.getElementById('id_accepted_by').value = '';
 
-    });
-</script>
+        });
+    </script>
 </div>
 
 {% endblock %}

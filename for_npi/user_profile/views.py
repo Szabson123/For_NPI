@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import TemplateView, DetailView, ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from .forms import TaskForm, ProductionIssueForm, IssueFilterForm, IssueFixForm
+from .forms import TaskForm, ProductionIssueForm, IssueFilterForm, IssueFixForm, DateFilterForm
 from django.urls import reverse_lazy
 from .models import Task, ProductionIssue, IssueFix
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -282,3 +282,23 @@ def issue_detail_view(request, issue_id):
         'issue': issue,
         'issue_fix': issue_fix,
     })
+    
+    
+def issue_list_filtered_by_date(request):
+    issues = ProductionIssue.objects.all()
+    form = DateFilterForm(request.GET or None)
+    
+    if form.is_valid():
+        start_date = form.cleaned_data.get('start_date')
+        end_date = form.cleaned_data.get('end_date')
+        
+        if start_date:
+            issues = issues.filter(report_date__date__gte=start_date)
+        if end_date:
+            issues = issues.filter(report_date__date__lte=end_date)
+    
+    context = {
+        'form': form,
+        'issues': issues
+    }
+    return render(request, 'user_profile/history_issue_list.html', context)

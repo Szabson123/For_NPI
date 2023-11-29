@@ -47,14 +47,14 @@ class IssueFilterForm(forms.Form):
     STATUS_CHOICES = [('', 'Any Status'), ('open', 'Open'), ('closed', 'Closed')]
     PRIORITY_CHOICES = [('', 'Any Priority'), ('high', 'High'), ('medium', 'Medium'), ('low', 'Low')]
 
-    title = forms.CharField(required=False)
-    status = forms.ChoiceField(choices=STATUS_CHOICES, required=False)
-    priority = forms.ChoiceField(choices=PRIORITY_CHOICES, required=False)
-    line = forms.ChoiceField(required=False)
-    machine = forms.ChoiceField(required=False)
-    type_of_issue = forms.ChoiceField(required=False)
-    reported_by = forms.ModelChoiceField(queryset=User.objects.none(), required=False, label='Reported by')
-    accepted_by = forms.ModelChoiceField(queryset=User.objects.none(), required=False, label='Accepted by')
+    title = forms.CharField(required=False, widget=forms.Select(attrs={'class': 'form-control'}))
+    status = forms.ChoiceField(choices=STATUS_CHOICES, required=False, widget=forms.Select(attrs={'class': 'form-control'}))
+    priority = forms.ChoiceField(choices=PRIORITY_CHOICES, required=False, widget=forms.Select(attrs={'class': 'form-control'}))
+    line = forms.ChoiceField(required=False, widget=forms.Select(attrs={'class': 'form-control'}))
+    machine = forms.ChoiceField(required=False, widget=forms.Select(attrs={'class': 'form-control'}))
+    type_of_issue = forms.ChoiceField(required=False, widget=forms.Select(attrs={'class': 'form-control'}))
+    reported_by = forms.ModelChoiceField(queryset=User.objects.none(), required=False, label='Reported by', widget=forms.Select(attrs={'class': 'form-control'}))
+    accepted_by = forms.ModelChoiceField(queryset=User.objects.none(), required=False, label='Accepted by', widget=forms.Select(attrs={'class': 'form-control'}))
 
     def __init__(self, *args, **kwargs):
         super(IssueFilterForm, self).__init__(*args, **kwargs)
@@ -89,3 +89,12 @@ class IssueFixForm(forms.ModelForm):
             'cause': "Przyczyna",
             'action': "Co zrobiłeś, żeby naprawić",
         }
+        
+        
+class DateInput(forms.DateInput):
+    input_type = 'date'
+    
+
+class DateFilterForm(forms.Form):
+    start_date = forms.DateField(widget=DateInput(), required=False)
+    end_date = forms.DateField(widget=DateInput(), required=False)
