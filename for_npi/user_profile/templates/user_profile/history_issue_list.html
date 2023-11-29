@@ -11,6 +11,7 @@
         <div class="d-flex justify-content-center">
             <table class="table table-striped table-hover mt-4">
                 <thead>
+                    <form method="get">
                         <tr>
                             <th style="min-width: 220px;">Title {{ form.title }}</th>
                             <th style="min-width: 120px;">Status {{ form.status }}</th>
@@ -18,13 +19,14 @@
                             <th style="min-width: 120px;">Line {{ form.line }}</th>
                             <th style="min-width: 135px;">Machine {{ form.machine }}</th>
                             <th style="min-width: 170px;">Type {{ form.type_of_issue }}</th>
-                            <th>
+                            <th style="min-width: 220px;">
                                 Filing date from: <input for="id_start_date" name="start_date" type="date" class="form-control" value="{{ request.GET.start_date }}">
+                                to: <input for="id_end_date" name="end_date" type="date" class="form-control" value="{{ request.GET.end_date }}">
                             </th>
                             <th style="min-width: 170px;">Reported by {{ form.reported_by }}</th>
-                            <th style="min-width: 170px;">Completed on: {{ issue.completed_date|date:"d.m.Y H:i" }}</th>
+                            <th style="min-width: 170px;">Completed on: {{ form.completed_on }}</th> <!-- Jeśli masz takie pole w formularzu -->
                             <th style="min-width: 170px;">Completed by: {{ form.accepted_by }}</th>
-                            <th>Actions</th>
+                            <th><button type="submit" class="btn btn-primary">Filter</button></th>
                         </tr>
                     </form>
                 </thead>
@@ -72,10 +74,15 @@
         document.getElementById('id_reported_by').onchange = function() {
         this.form.submit();
         };
-
         document.getElementById('id_accepted_by').onchange = function() {
             this.form.submit();
         };
+        document.getElementById('id_start_date').onchange = function() {
+            this.form.submit();
+        };
+        document.getElementById('id_end_date').onchange = function() {
+            this.form.submit();
+        };    
         document.getElementById('clearFilters').addEventListener('click', function() {
             document.getElementById('id_status').value = '';
             document.getElementById('id_priority').value = '';
@@ -84,7 +91,8 @@
             document.getElementById('id_type_of_issue').value = '';
             document.getElementById('id_reported_by').value = '';
             document.getElementById('id_accepted_by').value = '';
-
+            document.getElementById('id_start_date').value = '';
+            document.getElementById('id_end_date').value = '';
         });
     </script>
 </div>

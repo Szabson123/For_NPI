@@ -30,4 +30,6 @@ urlpatterns = [
 
     path('issue/<int:issue_id>/fix/', views.issue_fix_create_view, name='issue_fix_create'),
     path('issue/<int:issue_id>/', views.issue_detail_view, name='issue_detail'),
+    
+    path('edit-profile/', views.edit_user_profile, name='edit_profile'),
 ]

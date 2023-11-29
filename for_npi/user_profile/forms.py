@@ -3,6 +3,8 @@ from django import forms
 from accounts.models import User
 from .models import ProductionIssue, IssueFix
 from django.db.models import Exists, OuterRef
+import datetime
+from accounts.models import Profile
 
 class TaskForm(forms.ModelForm):
     class Meta:
@@ -97,4 +99,16 @@ class DateInput(forms.DateInput):
 
 class DateFilterForm(forms.Form):
     start_date = forms.DateField(widget=DateInput(), required=False)
-    end_date = forms.DateField(widget=DateInput(), required=False)
+    end_date = forms.DateField(widget=forms.DateInput(), required=False, initial=datetime.date.today)
+    
+
+class UserProfileForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = ['position', 'supervisor', 'department', 'phone_number', 'office_number', 'languages']
+        widgets = {
+            'position': forms.TextInput(attrs={'class': 'form-control'}),
+            # Dodaj klasy 'form-control' dla pozostałych pól
+        }
+        
+        

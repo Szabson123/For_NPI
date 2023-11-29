@@ -1,8 +1,8 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import TemplateView, DetailView, ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from .forms import TaskForm, ProductionIssueForm, IssueFilterForm, IssueFixForm, DateFilterForm
-from django.urls import reverse_lazy
+from .forms import TaskForm, ProductionIssueForm, IssueFilterForm, IssueFixForm, DateFilterForm, UserProfileForm
+from django.urls import reverse_lazy, reverse
 from .models import Task, ProductionIssue, IssueFix
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils import timezone
@@ -296,9 +296,25 @@ def issue_list_filtered_by_date(request):
             issues = issues.filter(report_date__date__gte=start_date)
         if end_date:
             issues = issues.filter(report_date__date__lte=end_date)
+    else:
+        form.fields['end_date'].initial = timezone.localdate()
     
     context = {
         'form': form,
         'issues': issues
     }
     return render(request, 'user_profile/history_issue_list.html', context)
+
+
+@login_required
+def edit_user_profile(request):
+    profile = request.user.profile
+    if request.method == 'POST':
+        form = UserProfileForm(request.POST, instance=profile)
+        if form.is_valid():
+            form.save()
+            username = request.user.username
+            return redirect(reverse('user_profile:profile', kwargs={'username': username}))
+    else:
+        form = UserProfileForm(instance=profile)
+    return render(request, 'user_profile/edit_profile.html', {'form': form})

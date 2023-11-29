@@ -1,18 +1,24 @@
-{% extends "user_profile/base.html" %} {% block content %}
-<div class="container">
-  <h1>Profil użytkownika: {{ object.get_full_name }}</h1>
-  {% if issue.accepted_by == request.user and issue.accepted_date and not issue.completed_date %}
-    <h3>Status: Wolny</h3>
-  {% else %}
-    <h3>Status: Zajęty</h3>
-  {% endif %}
+{% extends "user_profile/base.html" %}
 
-  <p>Stanowisko: </p>
-  <p>Przełożony: </p>
-  <p>Dział: </p>
-  <p>Numer telefonu: </p>
-  <p>email: </p>
-  <p>Numer służbowy:</p>
-  <p>Języki: </p>
+{% block content %}
+<div class="container mt-5">
+  <div class="card">
+    <div class="card-body">
+      <h2 class="card-title">Profil użytkownika: {{ user.get_full_name }}</h2>
+      <div class="card-text">
+        <p><strong>Status:</strong> {% if user.is_free %}Wolny{% else %}Zajęty{% endif %}</p>
+        <p><strong>Stanowisko:</strong> {{ user.profile.position }}</p>
+        <p><strong>Przełożony:</strong> {{ user.profile.supervisor.get_full_name }}</p>
+        <p><strong>Dział:</strong> {{ user.profile.department }}</p>
+        <p><strong>Numer telefonu:</strong> {{ user.profile.phone_number }}</p>
+        <p><strong>Email:</strong> {{ user.email }}</p>
+        <p><strong>Numer służbowy:</strong> {{ user.profile.office_number }}</p>
+        <p><strong>Języki:</strong> {{ user.profile.languages }}</p>
+      </div>
+      {% if request.user == user %}
+        <a href="{% url 'user_profile:edit_profile' %}" class="btn btn-primary">Edytuj profil</a>
+      {% endif %}
+    </div>
+  </div>
 </div>
 {% endblock %}

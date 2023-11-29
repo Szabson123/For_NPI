@@ -1,0 +1,11 @@
+{% extends "user_profile/base.html" %}
+{% block content %}
+<div class="container">
+  <h1>Edytuj Profil</h1>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Zapisz zmiany</button>
+  </form>
+</div>
+{% endblock %}
