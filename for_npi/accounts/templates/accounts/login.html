@@ -4,11 +4,11 @@
 <div class="container mt-5">
     <div class="row">
         <div class="col-md-6 offset-md-3">
-            <h2 class="text-center mb-4">Logowanie</h2>
+            <h2 class="text-center mb-4">Login</h2>
             <form action="{% url 'login' %}" method="post" class="needs-validation" novalidate>
                 {% csrf_token %}
 
-                <!-- Wyświetlanie błędów logowania -->
+                <!-- Display login errors -->
                 {% if form.non_field_errors %}
                     <div class="alert alert-danger" role="alert">
                         {% for error in form.non_field_errors %}
@@ -17,25 +17,25 @@
                     </div>
                 {% endif %}
 
-                <!-- Wyświetlanie błędów dla pola 'username' -->
+                <!-- Display errors for 'username' field -->
                 <div class="form-group mb-3">
-                    <label for="id_username">Nazwa użytkownika</label>
-                    <input type="text" name="username" class="form-control {% if form.username.errors %}is-invalid{% endif %}" id="id_username" placeholder="Wpisz nazwę użytkownika" required>
+                    <label for="id_username">Username</label>
+                    <input type="text" name="username" class="form-control {% if form.username.errors %}is-invalid{% endif %}" id="id_username" placeholder="Enter username" required>
                     {% for error in form.username.errors %}
                         <div class="invalid-feedback">{{ error }}</div>
                     {% endfor %}
                 </div>
 
-                <!-- Wyświetlanie błędów dla pola 'password' -->
+                <!-- Display errors for 'password' field -->
                 <div class="form-group mb-3">
-                    <label for="id_password">Hasło</label>
-                    <input type="password" name="password" class="form-control {% if form.password.errors %}is-invalid{% endif %}" id="id_password" placeholder="Wpisz hasło" required>
+                    <label for="id_password">Password</label>
+                    <input type="password" name="password" class="form-control {% if form.password.errors %}is-invalid{% endif %}" id="id_password" placeholder="Enter password" required>
                     {% for error in form.password.errors %}
                         <div class="invalid-feedback">{{ error }}</div>
                     {% endfor %}
                 </div>
 
-                <button type="submit" class="btn btn-primary w-100">Zaloguj się</button>
+                <button type="submit" class="btn btn-primary w-100">Log In</button>
             </form>
         </div>
     </div>

@@ -39,6 +39,19 @@
       action="{% url 'user_profile:task_accept' pk=task.pk %}"
       class="d-inline"
     >
+    {% if user.is_authenticated and task.author == user %}
+      <div class="container mt-4">
+        <h4>Przypisani użytkownicy:</h4>
+        <ul>
+          {% for user in assigned_users %}
+            <li>{{ user.username }}
+              - {% if user.task.accepted_date %}Zaakceptowane{% else %}Niezaakceptowane{% endif %}
+              - {% if user.task.completed_date %}Ukończone{% else %}W trakcie{% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endif %}
       {% csrf_token %}
       <button type="submit" class="btn btn-outline-success">
         Accept Task

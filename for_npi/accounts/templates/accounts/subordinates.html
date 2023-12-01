@@ -2,9 +2,8 @@
 
 {% block content %}
 
-
 <div class="container mt-5">
-    <h2 class="text-center mb-4">Lista pracowników:</h2>
+    <h2 class="text-center mb-4">Employee List:</h2>
     <form method="post">
         {% csrf_token %}
         <div class="row row-cols-1 row-cols-md-3 justify-content-center g-4">
@@ -15,11 +14,10 @@
                         <h5 class="card-title mb-3">{{ subordinate.user.get_full_name }}</h5>
                         <div class="d-grid gap-2">
                             <a href="{% url 'user_profile:profile' subordinate.user.username %}" class="btn btn-outline-primary">
-                                Zobacz profil
+                                View Profile
                             </a>
-                            </button>
                             <a href="{% url 'user_profile:create_task_for_subordinate' subordinate.user.username %}" class="btn btn-outline-secondary">
-                                Dodaj zadanie
+                                Add Task
                             </a>
                         </div>
                     </div>
@@ -27,7 +25,7 @@
             </div>
             {% empty %}
             <div class="col-12">
-                <p class="text-center">Brak pracowników do wyświetlenia.</p>
+                <p class="text-center">No employees to display.</p>
             </div>
             {% endfor %}
         </div>

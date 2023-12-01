@@ -1,8 +1,7 @@
 {% extends "user_profile/base.html" %} {% block content %}
 
-
 <div class="container mt-5">
-  <h2 class="text-center mb-4">Oczekujący na akceptację użytkownicy:</h2>
+  <h2 class="text-center mb-4">Users Awaiting Approval:</h2>
   <form method="post">
       {% csrf_token %}
       <div class="row row-cols-1 row-cols-md-3 justify-content-center g-4">
@@ -19,14 +18,14 @@
                   </div>
                   <div class="card-footer">
                       <button type="submit" name="profile_id" value="{{ profile.id }}" class="btn btn-primary w-100">
-                          Akceptuj
+                          Accept
                       </button>
                   </div>
               </div>
           </div>
           {% empty %}
           <div class="col-12">
-              <p class="text-center">Brak użytkowników do akceptacji.</p>
+              <p class="text-center">No users to approve.</p>
           </div>
           {% endfor %}
       </div>

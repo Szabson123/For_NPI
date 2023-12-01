@@ -6,7 +6,7 @@
 
     <form method="get">
         <div class="text-right mb-2">
-            <button class="btn btn-danger btn-sm" type="submit" id="clearFilters">Wyczyść filtry</button>
+            <button class="btn btn-danger btn-sm" type="submit" id="clearFilters">Clear Filters</button>
         </div>
         <div class="d-flex justify-content-center">
             <table class="table table-striped table-hover mt-4">
@@ -24,7 +24,7 @@
                                 to: <input for="id_end_date" name="end_date" type="date" class="form-control" value="{{ request.GET.end_date }}">
                             </th>
                             <th style="min-width: 170px;">Reported by {{ form.reported_by }}</th>
-                            <th style="min-width: 170px;">Completed on: {{ form.completed_on }}</th> <!-- Jeśli masz takie pole w formularzu -->
+                            <th style="min-width: 170px;">Completed on: {{ form.completed_on }}</th> <!-- If you have such a field in your form -->
                             <th style="min-width: 170px;">Completed by: {{ form.accepted_by }}</th>
                             <th><button type="submit" class="btn btn-primary">Filter</button></th>
                         </tr>
@@ -53,7 +53,7 @@
                     {% endfor %}
                 </tbody>
             </table>
-    </div>          
+    </div>         
 
     <script type="text/javascript">
         document.getElementById('id_status').onchange = function() {

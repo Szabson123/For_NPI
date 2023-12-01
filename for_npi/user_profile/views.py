@@ -88,6 +88,13 @@ class TaskDetailView(DetailView):
     model = Task
     template_name = 'user_profile/task_detail.html'
     context_object_name = 'task'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        task = self.get_object()
+        context['is_supervisor'] = self.request.user == task.author # Sprawdza, czy użytkownik to przełożony
+        context['assigned_users'] = task.assigned_to.all() # Lista użytkowników przypisanych do zadania
+        return context
     
 
 
@@ -151,16 +158,17 @@ def create_task_for_subordinate(request, username):
 
 @login_required
 def history_view(request):
-    completed_tasks = Task.objects.filter(completed_date__isnull=False).annotate(completed_date_date=TruncDate('completed_date')).order_by('-completed_date_date')
+    completed_tasks = Task.objects.filter(author=request.user, completed_date__isnull=False).order_by('-completed_date')
 
     grouped_tasks = {}
     for task in completed_tasks:
-        completed_date = task.completed_date_date
+        completed_date = task.completed_date  # Zmiana tutaj
         if completed_date not in grouped_tasks:
             grouped_tasks[completed_date] = []
         grouped_tasks[completed_date].append(task)
 
     return render(request, 'user_profile/history_view.html', {'grouped_tasks': grouped_tasks})
+
 
 
 class ProductionIssueCreateView(CreateView):

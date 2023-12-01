@@ -108,7 +108,6 @@ class UserProfileForm(forms.ModelForm):
         fields = ['position', 'supervisor', 'department', 'phone_number', 'office_number', 'languages']
         widgets = {
             'position': forms.TextInput(attrs={'class': 'form-control'}),
-            # Dodaj klasy 'form-control' dla pozostałych pól
         }
         
         

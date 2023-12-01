@@ -3,19 +3,19 @@
 {% block content %}
 
 <div class="container my-5">
-  <h1 class="mb-4 text-center">Historia Ukończonych Zadań</h1>
+  <h1 class="mb-4 text-center">Completed Tasks History</h1>
 
   {% for date, tasks in grouped_tasks.items %}
     <div class="mb-3 p-2 border-bottom">
-      <h2 class="h4 mb-3">Data Ukończenia: {{ date|date:"d.m.Y" }}</h2>
+      <h2 class="h4 mb-3">Completion Date: {{ date|date:"d.m.Y" }}</h2>
       {% for task in tasks %}
         <div class="card mb-2">
           <div class="card-body">
             <h5 class="card-title">{{ task.title }}</h5>
-            <h6 class="card-subtitle mb-2 text-muted">Autor: {{ task.author.first_name }} {{ task.author.last_name }}</h6>
+            <h6 class="card-subtitle mb-2 text-muted">Author: {{ task.author.first_name }} {{ task.author.last_name }}</h6>
             <p class="card-text">
-              Priorytet: {{ task.get_priority_display }}<br>
-              Data Utworzenia: {{ task.create_date|date:"d.m.Y H:i" }}
+              Priority: {{ task.get_priority_display }}<br>
+              Creation Date: {{ task.create_date|date:"d.m.Y H:i" }}
             </p>
           </div>
           <a href="{% url 'user_profile:task_detail' task.id %}" class="btn btn-primary">Details</a>
@@ -23,7 +23,7 @@
       {% endfor %}
     </div>
   {% empty %}
-    <p class="text-center">Brak ukończonych zadań.</p>
+    <p class="text-center">No completed tasks.</p>
   {% endfor %}
 
 </div>
