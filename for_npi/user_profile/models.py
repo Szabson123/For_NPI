@@ -2,6 +2,8 @@ from django.db import models
 from django.utils import timezone
 from django.urls import reverse
 from django.conf import settings
+from accounts.models import User
+
 
 class Task(models.Model):
     PRIORITY_CHOICES = (
@@ -19,6 +21,9 @@ class Task(models.Model):
     priority = models.CharField(max_length=50, choices=PRIORITY_CHOICES)
     additional = models.CharField(max_length=255, blank=True)
     assigned_to = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True, related_name='assigned_tasks')
+    accepted_by = models.ManyToManyField(User, related_name='accepted_tasks', blank=True)
+    completed_by = models.ManyToManyField(User, related_name='completed_tasks', blank=True)
+    ready_for_supervisor_review = models.BooleanField(default=False)
 
     def get_absolute_url(self):
         return reverse('user_profile:task_detail', kwargs={"pk": self.pk})
@@ -68,3 +73,10 @@ class IssueFix(models.Model):
         return f"Naprawa dla {self.production_issue.title}"
 
 
+class TaskCompletion(models.Model):
+    task = models.ForeignKey(Task, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    completion_date = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('task', 'user')

@@ -3,7 +3,7 @@ from django.views.generic import TemplateView, DetailView, ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from .forms import TaskForm, ProductionIssueForm, IssueFilterForm, IssueFixForm, DateFilterForm, UserProfileForm
 from django.urls import reverse_lazy, reverse
-from .models import Task, ProductionIssue, IssueFix
+from .models import Task, ProductionIssue, IssueFix, TaskCompletion
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
@@ -29,8 +29,6 @@ def history_issue_list(request):
         type_of_issue = form.cleaned_data.get('type_of_issue')
         reported_by = form.cleaned_data.get('reported_by')
         accepted_by = form.cleaned_data.get('accepted_by')
-
-        issues = ProductionIssue.objects.all()
 
         if title:
             issues = issues.filter(title__icontains=title)
@@ -94,6 +92,7 @@ class TaskDetailView(DetailView):
         task = self.get_object()
         context['is_supervisor'] = self.request.user == task.author # Sprawdza, czy użytkownik to przełożony
         context['assigned_users'] = task.assigned_to.all() # Lista użytkowników przypisanych do zadania
+        context['is_user_assigned'] = task.assigned_to.filter(id=self.request.user.id).exists()
         return context
     
 
@@ -102,30 +101,44 @@ class TaskDetailView(DetailView):
 def accept_task(request, pk):
     task = get_object_or_404(Task, pk=pk)
     if request.method == 'POST':
+        task.accepted_by.add(request.user)
         task.accepted_date = timezone.now()
         task.save()
-        return redirect('user_profile:task_detail', pk=pk)  
+        return redirect('user_profile:task_detail', pk=pk)
     else:
-        return redirect('user_profile:tasks_list')  
+        return redirect('user_profile:tasks_list')
 
 
 @login_required
 def complete_task(request, pk):
     task = get_object_or_404(Task, pk=pk)
     if request.method == 'POST':
+        task.completed_by.add(request.user)
         task.completed_date = timezone.now()
         task.save()
-        messages.success(request, 'Task has been marked as completed.')
-        return redirect('user_profile:tasks_list')  # Przekierowanie do listy zadań
+        return redirect('user_profile:task_detail', pk=pk)
     else:
-        return redirect('user_profile:task_detail', pk=task.pk)
+        return redirect('user_profile:tasks_list')
+
+@login_required
+def finalize_task(request, pk):
+    task = get_object_or_404(Task, pk=pk)
+    if request.user.is_supervisor and task.ready_for_supervisor_review:
+        if request.method == 'POST':
+            task.is_completed = True
+            task.completed_date = timezone.now()
+            task.save()
+            return redirect('user_profile:tasks_list')
+    return redirect('user_profile:task_detail', pk=task.pk)
 
 @login_required
 def tasks_list(request):
-    active_tasks = Task.objects.filter(completed_date__isnull=True) 
-    return render(request, 'user_profile/tasks_list.html', {'active_tasks': active_tasks})
+    if request.user.is_supervisor:
+        tasks = Task.objects.filter(is_completed=False, ready_for_supervisor_review=False)
+    else:
+        tasks = Task.objects.filter(is_completed=False, assigned_to=request.user)
 
-
+    return render(request, 'user_profile/tasks_list.html', {'tasks': tasks})
 class MainPage(TemplateView):
     template_name = 'user_profile/main_page.html'
 
@@ -159,16 +172,7 @@ def create_task_for_subordinate(request, username):
 @login_required
 def history_view(request):
     completed_tasks = Task.objects.filter(author=request.user, completed_date__isnull=False).order_by('-completed_date')
-
-    grouped_tasks = {}
-    for task in completed_tasks:
-        completed_date = task.completed_date  # Zmiana tutaj
-        if completed_date not in grouped_tasks:
-            grouped_tasks[completed_date] = []
-        grouped_tasks[completed_date].append(task)
-
-    return render(request, 'user_profile/history_view.html', {'grouped_tasks': grouped_tasks})
-
+    return render(request, 'user_profile/history_view.html', {'completed_tasks': completed_tasks})
 
 
 class ProductionIssueCreateView(CreateView):
