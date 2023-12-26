@@ -1,0 +1,24 @@
+{% extends "user_profile/base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+  <div class="card">
+    <div class="card-body">
+      <h2 class="card-title">User Profile: {{ user.get_full_name }}</h2>
+      <div class="card-text">
+        <p><strong>Status:</strong> {% if user.is_free %}Free{% else %}Occupied{% endif %}</p>
+        <p><strong>Position:</strong> {{ user.profile.position }}</p>
+        <p><strong>Supervisor:</strong> {{ user.profile.supervisor.get_full_name }}</p>
+        <p><strong>Department:</strong> {{ user.profile.department }}</p>
+        <p><strong>Phone Number:</strong> {{ user.profile.phone_number }}</p>
+        <p><strong>Email:</strong> {{ user.email }}</p>
+        <p><strong>Office Number:</strong> {{ user.profile.office_number }}</p>
+        <p><strong>Languages:</strong> {{ user.profile.languages }}</p>
+      </div>
+      {% if request.user == user %}
+        <a href="{% url 'user_profile:edit_profile' %}" class="btn btn-primary">Edit Profile</a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

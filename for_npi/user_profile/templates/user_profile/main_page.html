@@ -1,0 +1,221 @@
+{% extends "user_profile/base.html" %}
+{% block content %}
+
+<style>
+    /* Stylowanie tła modala */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.6);
+  align-items: center; 
+  justify-content: center; 
+}
+
+/* Stylowanie kontenera zawartości */
+.modal-content {
+  position: relative;
+  background-color: #fefefe;
+  margin: 10% auto;
+  padding: 20px;
+  border-radius: 5px;
+  width: 40%;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  animation-name: animatetop;
+  animation-duration: 0.4s;
+  font-size: 18px;
+}
+
+/* Animacja otwierania */
+@keyframes animatetop {
+  from {top: -300px; opacity: 0} 
+  to {top: 0; opacity: 1}
+}
+
+/* Stylowanie przycisku zamknięcia */
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* Stylowanie przycisków */
+.btn {
+  border: none;
+  padding: 10px 20px;
+  margin: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  color: white;
+}
+
+.btn-secondary:hover {
+  background-color: #545b62;
+}
+
+/* Opcjonalnie: Media queries dla responsywności */
+@media screen and (max-width: 600px) {
+  .modal-content {
+    width: 80%;
+  }
+}
+</style>
+
+
+<div class="container my-5">
+    <h2 class="text-center mb-4">List of Reported Issues</h2>
+    <div class="list-group">
+        {% for issue in object_list %}
+            <div class="card mb-3">
+                <div class="list-group-item list-group-item-action flex-column align-items-start py-3">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">{{ issue.title }}</h5>
+                        <small class="text-muted">{{ issue.report_date|date:"d.m.Y H:i" }}</small>
+                    </div>
+                    <p class="mb-1">{{ issue.description }}</p>
+                    <small class="text-muted">Reported by: {{ issue.reported_by }}</small>
+                    <div class="mt-3">
+                        <h6>Information:</h6>
+                        <ul>
+                            <li>Line: {{ issue.line }}</li>
+                            <li>Machine: {{ issue.machine }}</li>
+                            <li>Priority: {{ issue.priority }}</li>
+                            <li>Type of Issue: {{ issue.type_of_issue }}</li>
+                        </ul>
+                    </div>
+                    <!-- Display completion date -->
+                    {% if issue.completed_date %}
+                    <p class="card-text text-success">
+                        Completed on: {{ issue.completed_date }}
+                    </p>
+                    {% else %}
+                    <p class="card-text text-danger">Issue not yet completed.</p>
+                    {% if user == issue.accepted_by %}
+                    <form id="completeIssueForm-{{ issue.id }}" method="post" action="{% url 'user_profile:issue_complete' issue.id %}" style="display: none;">
+                        {% csrf_token %}
+                    </form>
+            
+                    <!-- Button that opens a modal -->
+                    <button class="openModalBtn" data-issue-id="{{ issue.id }}">Complete Issue</button>
+
+                    <!-- Modal structure -->
+                    <div id="myModal" class="modal">
+                        <div class="modal-content">
+                          <span class="close">&times;</span>
+                          <p>Are you sure you want to complete the task?</p>
+                          <div style="text-align: center;">
+                            <a id="acceptBtn" href="{% url 'user_profile:issue_fix_create' issue.id %}" class="btn btn-primary">Accept</a>
+                            <button id="cancelBtn" class="btn btn-secondary">Cancel</button>
+                          </div>
+                        </div>
+                      </div>
+                    {% endif %}
+                  {% endif %}
+                    {% if issue.accepted_date %}
+                        <p class="card-text text-success">
+                            Accepted on: {{ issue.accepted_date }} by {{ issue.accepted_by.get_full_name }}
+                        </p>
+
+                        <!-- Add section with information -->
+                    {% else %}
+                        <p class="card-text text-danger">Issue not yet Accepted.</p>
+                        <div class="mt-3 d-flex justify-content-start">
+                            {% if "Supervisor" in group_names %}
+                                <form method="post" action="{% url 'user_profile:issue_accept' issue.id %}" class="form-inline mr-2">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-success btn-sm mr-2">Accept Issue</button>
+                                </form>
+                                <form method="post" action="{% url 'user_profile:issue_assign' issue.id %}" class="form-inline">
+                                    {% csrf_token %}
+                                    <div class="input-group">
+                                        <select name="subordinate" class="custom-select custom-select-sm mr-2">
+                                            {% for subordinate in subordinates %}
+                                                <option value="{{ subordinate.user.id }}">{{ subordinate.user.get_full_name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <button type="submit" class="btn btn-primary btn-sm">Assign</button>
+                                    </div>
+                                </form>
+                            {% elif "Engineer" in group_names %}
+                                <form method="post" action="{% url 'user_profile:issue_accept' issue.id %}" class="form-inline">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-success btn-sm">Accept Issue</button>
+                                </form>
+                            {% elif "Production" in group_names %}
+                                <!-- Additional handling for Production group -->
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        {% empty %}
+            <div class="list-group-item">No reported issues.</div>
+        {% endfor %}
+    </div>
+</div>
+
+
+
+    <script>
+        document.querySelectorAll('.openModalBtn').forEach(button => {
+            button.addEventListener('click', function() {
+                var issueId = this.getAttribute('data-issue-id');
+                var modal = document.getElementById('myModal');
+                var acceptBtn = document.getElementById('acceptBtn');
+                var cancelBtn = document.getElementById('cancelBtn'); 
+                var closeBtn = document.querySelector('.close');
+        
+                // Zaktualizuj funkcję kliknięcia przycisku "Akceptuj"
+                acceptBtn.onclick = function() {
+                    document.getElementById("completeIssueForm-" + issueId).submit();
+                };
+        
+                // Zamknięcie modala po kliknięciu "Anuluj"
+                cancelBtn.onclick = function() {
+                    modal.style.display = "none";
+                };
+        
+                // Zamknięcie modala po kliknięciu "X"
+                closeBtn.onclick = function() {
+                    modal.style.display = "none";
+                };
+        
+                modal.style.display = "block";
+            });
+        });
+        
+        // Zamknięcie modala po kliknięciu poza jego obszarem
+        window.onclick = function(event) {
+            var modal = document.getElementById('myModal');
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        };
+    </script>
+{% endblock %}

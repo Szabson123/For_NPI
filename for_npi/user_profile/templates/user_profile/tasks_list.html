@@ -1,0 +1,41 @@
+{% extends "user_profile/base.html" %}
+{% block content %}
+<div class="container mt-4">
+  <h1>List of Tasks</h1>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Author</th>
+        <th>Title</th>
+        <th>Priority</th>
+        <th>Created</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for task in tasks %}
+      {% if not task.completed_date  %}
+      <tr>
+        <td>{{ task.author.first_name }} {{ task.author.last_name }}</td>
+        <td>{{ task.title }}</td>
+        <td>{{ task.get_priority_display }}</td>
+        <td>{{ task.create_date }}</td>
+        <td>
+          <a
+            href="{% url 'user_profile:task_detail' task.pk %}"
+            class="btn btn-primary btn-sm"
+            >View</a
+          >
+          <a
+            href="{% url 'user_profile:task_update' task.pk %}"
+            class="btn btn-secondary btn-sm"
+            >Edit</a
+          >
+        </td>
+      </tr>
+      {% endif %}
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

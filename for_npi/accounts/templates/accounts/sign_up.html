@@ -1,0 +1,40 @@
+{% extends "user_profile/base.html" %}
+{% block content %}
+
+<div class="container mt-5">
+  <div class="row">
+      <div class="col-md-8 offset-md-2">
+          <h2 class="text-center mb-4">Registration</h2>
+          <form method="post" action="{% url 'signup' %}" class="needs-validation" novalidate>
+              {% csrf_token %}
+
+              <!-- Display general form errors -->
+              {% if form.non_field_errors %}
+                <div class="alert alert-danger" role="alert">
+                  {% for error in form.non_field_errors %}
+                    {{ error }}
+                  {% endfor %}
+                </div>
+              {% endif %}
+
+              <!-- Display errors for individual form fields -->
+              {% for field in form %}
+                <div class="form-group mb-3">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.help_text %}
+                      <small class="form-text text-muted">{{ field.help_text }}</small>
+                    {% endif %}
+                    {% for error in field.errors %}
+                      <div class="invalid-feedback" style="display: block;">{{ error }}</div>
+                    {% endfor %}
+                </div>
+              {% endfor %}
+
+              <button type="submit" class="btn btn-primary w-100">Register</button>
+          </form>
+      </div>
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,62 @@
+{% extends "user_profile/base.html" %}
+{% block content %}
+<div class="container mt-4 d-flex justify-content-center">
+  <div class="card" style="width: 100%; max-width: 600px">
+    <div class="card-body">
+      <h2 class="card-title">
+        {{ task.title }} - {{ task.author.first_name }} {{ task.author.last_name }}
+      </h2>
+      <p class="card-text">{{ task.text }}</p>
+      <p class="card-text">Priority: {{ task.get_priority_display }}</p>
+      <p class="card-text">Additional notes: {{ task.additional }}</p>
+      <p class="card-text">Created on: {{ task.create_date }}</p>
+
+      {% if task.completed_date %}
+      <p class="card-text text-success">
+        Completed on: {{ task.completed_date }}
+      </p>
+      {% else %}
+      <p class="card-text text-danger">Task not yet completed.</p>
+      {% endif %}
+
+      <div class="container mt-4">
+        <h4>Assigned users:</h4>
+        <ul>
+          {% for assigned_user in assigned_users %}
+            <li>{{ assigned_user.username }}
+              {% if assigned_user in task.accepted_by.all %} - Accepted {% else %} - Not Accepted {% endif %}
+              {% if task.completed_by == assigned_user %} - Completed {% else %} - In Progress {% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      {% if user.is_authenticated and is_user_assigned and not task.accepted_date %}
+          <form method="post" action="{% url 'user_profile:task_accept' pk=task.pk %}" class="d-inline">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-outline-success">Accept Task</button>
+          </form>
+      {% endif %}
+
+      {% if user.is_authenticated and is_user_assigned and task.accepted_date and not task.completed_date %}
+          <form method="post" action="{% url 'user_profile:task_complete' pk=task.pk %}" class="d-inline">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-outline-info">Mark as Completed</button>
+          </form>
+      {% endif %}
+
+      {% if user.is_authenticated and task.author == user %}
+          <a class="btn btn-outline-primary" href="{% url 'user_profile:task_update' pk=task.pk %}">Edit</a>
+
+          <!-- Dodany fragment dla supervisorów do oznaczania zadania jako ostatecznie zakończone -->
+          {% if task.ready_for_supervisor_review and user.is_supervisor %}
+              <form method="post" action="{% url 'user_profile:finalize_task' pk=task.pk %}">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-success">Mark as Completed by Supervisor</button>
+              </form>
+          {% endif %}
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}
